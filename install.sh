@@ -1,13 +1,15 @@
 #!/bin/bash
 
-# Installation script for Linux Package Installer
+# Installation script for SnapWiz - The Magical Package Installer
 # This script sets up the application and creates a desktop entry
 
 set -e
 
 echo "======================================"
-echo "Linux Package Installer - Setup"
+echo "⚡🧙‍♂️ SnapWiz - Setup"
 echo "======================================"
+echo ""
+echo "Install packages in a snap, like a wizard!"
 echo ""
 
 # Check if Python 3 is installed
@@ -84,7 +86,7 @@ chmod +x main.py
 echo "✓ Made main.py executable"
 
 # Create desktop entry
-DESKTOP_FILE="$HOME/.local/share/applications/linux-package-installer.desktop"
+DESKTOP_FILE="$HOME/.local/share/applications/snapwiz.desktop"
 mkdir -p "$HOME/.local/share/applications"
 
 echo ""
@@ -92,8 +94,8 @@ echo "Creating desktop entry..."
 
 cat > "$DESKTOP_FILE" << EOF
 [Desktop Entry]
-Name=Linux Package Installer
-Comment=Install .deb and .rpm packages easily
+Name=SnapWiz
+Comment=Install packages in a snap, like a wizard!
 Exec="$VENV_DIR/bin/python" "$INSTALL_DIR/main.py"
 Icon=package-x-generic
 Terminal=false
@@ -112,22 +114,22 @@ fi
 BIN_DIR="$HOME/.local/bin"
 mkdir -p "$BIN_DIR"
 
-LAUNCHER="$BIN_DIR/linux-package-installer"
+LAUNCHER="$BIN_DIR/snapwiz"
 
 echo ""
 echo "Creating launcher script..."
 
 cat > "$LAUNCHER" << 'EOF'
 #!/bin/bash
-# Linux Package Installer Launcher Script
+# SnapWiz Launcher Script
 # This script ensures proper execution from any directory
 
 # Get the directory where this script is located
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Detect the installation directory
-if [ -f "$HOME/.linux-package-installer/install_path.txt" ]; then
-    INSTALL_DIR=$(cat "$HOME/.linux-package-installer/install_path.txt")
+if [ -f "$HOME/.snapwiz/install_path.txt" ]; then
+    INSTALL_DIR=$(cat "$HOME/.snapwiz/install_path.txt")
 else
     echo "Error: Installation path not found."
     echo "Please reinstall the application using install.sh"
@@ -164,8 +166,8 @@ chmod +x "$LAUNCHER"
 echo "✓ Created launcher script at: $LAUNCHER"
 
 # Save installation path for launcher script
-mkdir -p "$HOME/.linux-package-installer"
-echo "$INSTALL_DIR" > "$HOME/.linux-package-installer/install_path.txt"
+mkdir -p "$HOME/.snapwiz"
+echo "$INSTALL_DIR" > "$HOME/.snapwiz/install_path.txt"
 
 # Check if .local/bin is in PATH
 if [[ ":$PATH:" != *":$BIN_DIR:"* ]]; then
@@ -177,15 +179,15 @@ fi
 
 echo ""
 echo "======================================"
-echo "Installation Complete!"
+echo "⚡ Installation Complete! 🧙‍♂️"
 echo "======================================"
 echo ""
-echo "You can now run the application by:"
+echo "You can now run SnapWiz by:"
 echo "  1. Running: $VENV_DIR/bin/python $INSTALL_DIR/main.py"
-echo "  2. Running: linux-package-installer (if ~/.local/bin is in PATH)"
-echo "  3. Searching for 'Linux Package Installer' in your application menu"
+echo "  2. Running: snapwiz (if ~/.local/bin is in PATH)"
+echo "  3. Searching for 'SnapWiz' in your application menu"
 echo ""
 echo "Note: The application uses a virtual environment at: $VENV_DIR"
 echo ""
-echo "Enjoy using Linux Package Installer!"
+echo "Enjoy using SnapWiz - Install packages in a snap, like a wizard!"
 echo ""

@@ -16,7 +16,7 @@ class InstallLogger:
         if log_dir is None:
             # Use user's home directory for logs
             home = os.path.expanduser("~")
-            log_dir = os.path.join(home, ".linux-package-installer")
+            log_dir = os.path.join(home, ".snapwiz")
         
         self.log_dir = log_dir
         self.log_file = os.path.join(log_dir, "installation_history.json")

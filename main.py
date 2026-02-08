@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Linux Package Installer - Main Application (Enhanced Version)
+SnapWiz - The Magical Package Installer
 A simple GUI tool to help new Linux users install .deb and .rpm packages
-with enhanced UI/UX features
+Install packages in a snap, like a wizard!
 """
 
 import sys
@@ -111,7 +111,7 @@ class MainWindow(QMainWindow):
         
     def init_ui(self):
         """Initialize the user interface"""
-        self.setWindowTitle("Linux Package Installer")
+        self.setWindowTitle("SnapWiz - The Magical Package Installer")
         self.setGeometry(100, 100, 950, 700)
         
         # Create central widget and main layout
@@ -122,14 +122,14 @@ class MainWindow(QMainWindow):
         main_layout.setContentsMargins(20, 20, 20, 20)
         
         # Header
-        header = QLabel("📦 Linux Package Installer")
+        header = QLabel("⚡🧙‍♂️ SnapWiz")
         header.setAlignment(Qt.AlignCenter)
         header_font = QFont("Arial", 24, QFont.Bold)
         header.setFont(header_font)
-        header.setToolTip("A simple tool to install .deb and .rpm packages")
+        header.setToolTip("Install packages in a snap, like a wizard!")
         main_layout.addWidget(header)
         
-        subtitle = QLabel("Simple installation for .deb and .rpm packages")
+        subtitle = QLabel("The magical way to install .deb and .rpm packages")
         subtitle.setAlignment(Qt.AlignCenter)
         subtitle_font = QFont("Arial", 11)
         subtitle.setFont(subtitle_font)
@@ -189,7 +189,7 @@ class MainWindow(QMainWindow):
         
         self.tray_icon.setContextMenu(tray_menu)
         self.tray_icon.activated.connect(self.tray_icon_clicked)
-        self.tray_icon.setToolTip("Linux Package Installer")
+        self.tray_icon.setToolTip("SnapWiz - The Magical Package Installer")
         self.tray_icon.show()
     
     def tray_icon_clicked(self, reason):
@@ -203,7 +203,7 @@ class MainWindow(QMainWindow):
         event.ignore()
         self.hide()
         self.tray_icon.showMessage(
-            "Linux Package Installer",
+            "SnapWiz",
             "Application minimized to tray. Double-click to restore.",
             QSystemTrayIcon.Information,
             2000
@@ -511,9 +511,9 @@ class MainWindow(QMainWindow):
         about_layout = QVBoxLayout()
         
         about_text = QLabel(
-            "<h3>Linux Package Installer v1.0</h3>"
-            "<p>A simple tool to help new Linux users install packages.</p>"
-            "<p>Supports .deb and .rpm package formats.</p>"
+            "<h3>⚡🧙‍♂️ SnapWiz v1.0</h3>"
+            "<p><i>Install packages in a snap, like a wizard!</i></p>"
+            "<p>A magical tool to help Linux users install .deb and .rpm packages.</p>"
             "<p><b>Author:</b> Srijan-XI</p>"
             "<p><b>License:</b> MIT License</p>"
             "<p><b>Keyboard Shortcuts:</b></p>"
@@ -919,7 +919,7 @@ class MainWindow(QMainWindow):
     def load_settings(self):
         """Load application settings"""
         try:
-            settings_dir = os.path.join(os.path.expanduser("~"), ".linux-package-installer")
+            settings_dir = os.path.join(os.path.expanduser("~"), ".snapwiz")
             settings_file = os.path.join(settings_dir, "settings.json")
             
             if os.path.exists(settings_file):
@@ -933,7 +933,7 @@ class MainWindow(QMainWindow):
     def save_settings(self):
         """Save application settings"""
         try:
-            settings_dir = os.path.join(os.path.expanduser("~"), ".linux-package-installer")
+            settings_dir = os.path.join(os.path.expanduser("~"), ".snapwiz")
             os.makedirs(settings_dir, exist_ok=True)
             settings_file = os.path.join(settings_dir, "settings.json")
             
@@ -953,8 +953,8 @@ def main():
     app.setStyle('Fusion')
     
     # Set application info
-    app.setApplicationName("Linux Package Installer")
-    app.setOrganizationName("LinuxTools")
+    app.setApplicationName("SnapWiz")
+    app.setOrganizationName("SnapWiz")
     
     # Prevent app from quitting when window closes (for system tray)
     app.setQuitOnLastWindowClosed(False)
