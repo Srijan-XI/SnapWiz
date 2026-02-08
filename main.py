@@ -363,7 +363,7 @@ class MainWindow(QMainWindow):
             "<h3>Linux Package Installer v1.0</h3>"
             "<p>A simple tool to help new Linux users install packages.</p>"
             "<p>Supports .deb and .rpm package formats.</p>"
-            "<p><b>Author:</b> Your Development Team</p>"
+            "<p><b>Author:</b> Srijan-XI</p>"
             "<p><b>License:</b> MIT License</p>"
         )
         about_text.setWordWrap(True)

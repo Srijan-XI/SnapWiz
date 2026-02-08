@@ -59,7 +59,16 @@ git clone https://github.com/Srijan-XI/Linux-pi.git
 cd Linux-pi
 ```
 
-### 2. Install Python Dependencies
+### 2. Use a Virtual Environment (Recommended)
+
+It's recommended to use a virtual environment to avoid conflicts with system packages:
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+### 3. Install Python Dependencies
 
 ```bash
 pip install -r requirements.txt
@@ -71,7 +80,7 @@ Or install manually:
 pip install PyQt5
 ```
 
-### 3. Make the Script Executable (Optional)
+### 4. Make the Script Executable (Optional)
 
 ```bash
 chmod +x main.py
