@@ -1,10 +1,11 @@
-# Linux Package Installer 
+# ⚡🧙‍♂️ SnapWiz
 
-A user-friendly GUI application to help new Linux users install `.deb` and `.rpm` packages with ease.
+**Install packages in a snap, like a wizard!**
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Python](https://img.shields.io/badge/python-3.6+-blue.svg)
-![PyQt5](https://img.shields.io/badge/PyQt5-5.15+-green.svg)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.6+](https://img.shields.io/badge/python-3.6+-blue.svg)](https://www.python.org/downloads/)
+
+A magical GUI tool to help Linux users easily install .deb and .rpm packages with a beautiful, modern interface.
 
 ## Features
 
@@ -76,8 +77,8 @@ Use the automated installation script that handles everything for you:
 
 ```bash
 # Clone the repository
-git clone https://github.com/Srijan-XI/Linux-pi.git
-cd Linux-pi
+git clone https://github.com/Srijan-XI/SnapWiz.git
+cd SnapWiz
 
 # Run the installation script
 chmod +x install.sh
@@ -92,8 +93,8 @@ The `install.sh` script will:
 - ✅ Set up the application automatically
 
 After running the script, you can launch the application by:
-- Searching for "Linux Package Installer" in your application menu
-- Running `linux-package-installer` in terminal (if `~/.local/bin` is in your PATH)
+- Searching for "SnapWiz" in your application menu
+- Running `snapwiz` in terminal (if `~/.local/bin` is in your PATH)
 - Running `python3 main.py` from the project directory
 
 ### Option 2: Manual Installation
@@ -103,8 +104,8 @@ If you prefer manual installation or want more control:
 #### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/Srijan-XI/Linux-pi.git
-cd Linux-pi
+git clone https://github.com/Srijan-XI/SnapWiz.git
+cd SnapWiz
 ```
 
 #### 2. Use a Virtual Environment (Recommended)
@@ -151,7 +152,7 @@ After installation, you can launch the application in several ways:
 If you used the automated installer and `~/.local/bin` is in your PATH:
 
 ```bash
-linux-package-installer
+snapwiz
 ```
 
 #### Method 3: From Terminal (Direct Python)
@@ -202,7 +203,7 @@ source ~/.zshrc
 fish_add_path ~/.local/bin
 ```
 
-After this, you can run `linux-package-installer` from anywhere!
+After this, you can run `snapwiz` from anywhere!
 
 ### Installing a Package (Step-by-Step Tutorial)
 
@@ -455,7 +456,7 @@ If you encounter any issues or have questions:
 
 1. Check the [Troubleshooting](#troubleshooting) section
 2. Review the [documentation](docs/) folder
-3. Search existing [Issues](https://github.com/Srijan-XI/Linux-pi/issues)
+3. Search existing [Issues](https://github.com/Srijan-XI/SnapWiz/issues)
 4. Open a new issue with detailed information about your problem
 
 ## Author
@@ -463,7 +464,7 @@ If you encounter any issues or have questions:
 **Srijan-XI**
 
 - GitHub: [@Srijan-XI](https://github.com/Srijan-XI)
-- Repository: [Linux-pi](https://github.com/Srijan-XI/Linux-pi)
+- Repository: [SnapWiz](https://github.com/Srijan-XI/SnapWiz)
 
 ---
 
