@@ -5,45 +5,33 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.6+](https://img.shields.io/badge/python-3.6+-blue.svg)](https://www.python.org/downloads/)
 
-A magical GUI tool to help Linux users easily install .deb and .rpm packages with a beautiful, modern interface.
+A magical GUI tool to help Linux users easily install `.deb`, `.rpm`, `.snap`, and `.flatpak` packages with a beautiful, modern interface.
 
 ## Features
 
 ### Core Features
 
-✨ **Simple and Intuitive Interface** - Easy-to-use GUI designed for beginners
-
-📦 **Multi-Format Support** - Works with both `.deb` and `.rpm` packages
-
-📊 **Detailed Progress Tracking** - 7-step installation process with real-time updates
-
-🔍 **Package Information** - View detailed package metadata before installation
-
-📝 **Installation History** - Keep track of all installed packages with success/failure indicators
-
-❌ **Error Handling** - Clear error messages and troubleshooting guidance
-
-🔧 **Dependency Resolution** - Automatically handles package dependencies
-
-🌐 **Offline Support** - Works completely offline once installed
-
-📋 **Installation Logs** - Detailed logs for troubleshooting
+- ✨ **Simple and Intuitive Interface** - Easy-to-use GUI designed for beginners
+- 📦 **Multi-Format Support** - Works with `.deb`, `.rpm`, `.snap`, and `.flatpak` packages
+- 🎯 **Drag-and-Drop Support** - Simply drag package files into the window to add them to the queue
+- ⚙️ **Centralized Configuration** - Easy customization through `config.py`
+- 📊 **Detailed Progress Tracking** - 7-step installation process with real-time updates
+- 🔍 **Package Information** - View detailed package metadata before installation
+- 📝 **Installation History** - Keep track of all installed packages with success/failure indicators
+- ❌ **Error Handling** - Clear error messages and troubleshooting guidance
+- 🔧 **Dependency Resolution** - System package managers handle dependencies for individual packages (inter-queue dependencies require manual ordering)
+- 🌐 **Offline Support** - Works completely offline once installed
+- 📋 **Installation Logs** - Detailed logs for troubleshooting
 
 ### Enhanced UI/UX Features
 
-⌨️ **Keyboard Shortcuts** - Full keyboard support (Ctrl+O, Ctrl+I, F5, Ctrl+Q)
-
-🔔 **System Tray Integration** - Minimize to tray with installation notifications
-
-💡 **Comprehensive Tooltips** - Helpful guidance on every element
-
-🎨 **Light & Dark Themes** - Switch between themes with persistent settings
-
-📍 **Visual Progress Steps** - See exactly what's happening during installation
-
-✅ **Success/Failure Icons** - Quick visual identification in history
-
-🎯 **Professional Design** - Modern, polished interface with emoji indicators
+- ⌨️ **Keyboard Shortcuts** - Full keyboard support (Ctrl+O, Ctrl+I, F5, Ctrl+Q)
+- 🔔 **System Tray Integration** - Minimize to tray with installation notifications
+- 💡 **Comprehensive Tooltips** - Helpful guidance on every element
+- 🎨 **Light & Dark Themes** - Switch between themes with persistent settings
+- 📍 **Visual Progress Steps** - See exactly what's happening during installation
+- ✅ **Success/Failure Icons** - Quick visual identification in history
+- 🎯 **Professional Design** - Modern, polished interface with emoji indicators
 
 ## Screenshots
 
@@ -64,10 +52,27 @@ Track all your package installations with timestamps and status indicators.
 
 The application automatically detects your system's package manager:
 
+**Traditional Package Managers:**
 - **Debian/Ubuntu**: `apt` or `dpkg`
 - **Fedora**: `dnf`
 - **RHEL/CentOS**: `yum` or `dnf`
 - **openSUSE**: `zypper`
+
+**Universal Package Managers:**
+- **Snap**: `snapd` (for `.snap` packages)
+  ```bash
+  # Install snapd
+  sudo apt install snapd  # Debian/Ubuntu
+  sudo dnf install snapd  # Fedora
+  sudo systemctl enable --now snapd
+  ```
+
+- **Flatpak**: `flatpak` (for `.flatpak` packages)
+  ```bash
+  # Install flatpak
+  sudo apt install flatpak  # Debian/Ubuntu
+  sudo dnf install flatpak  # Fedora
+  ```
 
 ## Installation
 
@@ -310,11 +315,97 @@ View detected system configuration:
 2. **Check package compatibility** - Make sure it matches your distribution:
    - `.deb` files → Debian, Ubuntu, Linux Mint, Kali
    - `.rpm` files → Fedora, RHEL, CentOS, openSUSE
+   - `.snap` files → Universal (requires snapd)
+   - `.flatpak` files → Universal (requires flatpak)
 3. **Review package info before installing** - Verify it's what you expect
 4. **Keep track of installations** - Use the history feature
 5. **Read error messages** - They often tell you exactly what's wrong
 6. **Make sure you have enough disk space** - Some packages are large
 7. **Use dark mode at night** - It's easier on your eyes!
+8. **Try drag-and-drop** - It's the fastest way to add packages to the queue!
+
+## ⚠️ Important Notes and Limitations
+
+### Batch Installation Best Practices
+
+**Recommended Maximum**: **20 packages per batch**
+- Large batches (>20 packages) may experience performance issues
+- For best experience, split large installations into smaller batches
+- The application will still work with more, but installation time increases significantly
+
+**What this means:**
+```
+✅ Good: Install 15 packages in one batch
+⚠️ Acceptable: Install 30 packages (may be slower)
+❌ Not Recommended: Install 100+ packages at once
+```
+
+### Dependency Resolution
+
+**Known Limitation**: Dependencies between queued packages are **not automatically resolved**
+
+**What this means:**
+- If Package B depends on Package A, and both are in the queue
+- Package B may fail if it's installed before Package A
+- **Solution**: Install packages in dependency order, or install dependencies first
+
+**Example:**
+```
+❌ Wrong Order:
+  1. app-plugin.deb (depends on app)
+  2. app.deb
+
+✅ Correct Order:
+  1. app.deb
+  2. app-plugin.deb
+```
+
+**Best Practice:**
+- Check package dependencies before batch installation
+- Order packages manually in the queue (install dependencies first)
+- Or use traditional package managers (apt/dnf) which handle dependencies automatically
+
+### Authentication and Password Prompts
+
+**Known Behavior**: Root password may be requested **multiple times** during batch installation
+
+**Why this happens:**
+- Linux security policies (OS limitation, not SnapWiz)
+- Each package installation requires privilege escalation
+- `pkexec`/`sudo` sessions may timeout between packages
+
+**What to expect:**
+```
+Installing 5 packages:
+  Package 1: Password prompt ✓
+  Package 2: (may use cached credentials)
+  Package 3: Password prompt again ✓
+  Package 4: (may use cached credentials)
+  Package 5: Password prompt again ✓
+```
+
+**Tips:**
+- Keep an eye on the installation process
+- Be ready to enter your password when prompted
+- For large batches, consider using `sudo` with extended timeout
+- This is normal behavior and doesn't indicate an error
+
+### Package Format Specific Notes
+
+**Snap Packages:**
+- Require `snapd` service to be running
+- Local .snap files are installed with `--dangerous` flag (bypasses signature checks)
+- First-time snap installation may take longer due to core snap setup
+
+**Flatpak Packages:**
+- Only `.flatpak` bundle files are supported (not repository refs)
+- User-level installation is attempted first, then system-wide if it fails
+- May require runtime dependencies (handled automatically)
+
+**Traditional .deb/.rpm:**
+- Dependency resolution handled by system package manager
+- May update package databases automatically
+- Internet connection may be required for dependencies
 
 ## System Integration
 
@@ -361,10 +452,17 @@ If the package manager is not detected:
 
 If installation fails due to missing dependencies:
 
-1. The application automatically tries to resolve dependencies
-2. For `.deb` packages, it runs `apt-get install -f` automatically
-3. For `.rpm` packages, use DNF or YUM which handle dependencies
-4. Manual fix: Run your package manager's fix command in terminal
+1. **For individual packages**: The system package manager tries to resolve dependencies automatically
+2. **For `.deb` packages**: `apt` handles dependencies from repositories
+3. **For `.rpm` packages**: `dnf`/`yum` handle dependencies automatically
+4. **For batch installations**: Dependencies **between queued packages** are NOT resolved
+   - See "Important Notes" section above for details
+   - Solution: Order packages manually with dependencies first
+5. **Manual fix**: Run your package manager's fix command in terminal
+   ```bash
+   sudo apt --fix-broken install  # For .deb
+   sudo dnf check               # For .rpm
+   ```
 
 ### Package Information Not Showing
 
@@ -373,6 +471,8 @@ If package information is not displayed:
 1. Install the required tools:
    - For `.deb`: `sudo apt install dpkg`
    - For `.rpm`: `sudo dnf install rpm` or `sudo yum install rpm`
+   - For `.snap`: `sudo apt install snapd`
+   - For `.flatpak`: `sudo apt install flatpak`
 
 ## Architecture
 

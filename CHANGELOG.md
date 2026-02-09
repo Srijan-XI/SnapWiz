@@ -2,6 +2,55 @@
 
 All notable changes to the **SnapWiz** (formerly Linux Package Installer) project.
 
+## [1.4.0] - 2026-02-09
+
+### Added - Snap & Flatpak Support + Drag-and-Drop + Multi-Language
+- 📦 **Extended Package Format Support**
+  - Snap package installation (.snap files)
+  - Flatpak package installation (.flatpak bundles)
+  - Service/daemon status checking for Snap
+  - User and system-wide installation for Flatpak
+  - Package metadata extraction for all formats
+  
+- 🎯 **Drag-and-Drop Functionality**
+  - Drag package files directly into window
+  - Multi-file drag-and-drop support (up to 50 files)
+  - Automatic queue addition
+  - Smart file validation
+  - Visual feedback and notifications
+  - Auto-switch to Install tab
+  
+- ⚙️ **Centralized Configuration System**
+  - New `config.py` module for all settings
+  - Extracted hardcoded values
+  - Easy customization and maintenance
+  - Support for new package formats
+  - Theme configuration
+  - Keyboard shortcut configuration
+  - Drag-and-drop settings
+
+- 🌍 **Multi-Language Support** (Internationalization)
+  - Support for 6 languages: English, French, German, Spanish, Italian, Russian
+  - New `language.py` module with full translation system
+  - Language selector in Settings tab
+  - 360+ translations (60 keys × 6 languages)
+  - Persistent language preference
+  - Automatic fallback to English
+  - Easy to add new languages
+  
+### Changed
+- 🎨 **UI Updates**: Updated subtitle to mention all four package formats
+- 📝 **File Dialog**: Extended to include .snap and .flatpak filters
+- 🔧 **Package Handler**: Refactored to use config-based format detection
+- 💡 **Status Messages**: Added drag-and-drop hint in main window
+
+### Technical
+- Added `config.py` with comprehensive settings
+- Enhanced `PackageHandler` with format-agnostic methods
+- Implemented `dragEnterEvent` and `dropEvent` in  `MainWindow`
+- Added snap and flatpak installation handlers
+- Updated imports to include QUrl, QDragEnterEvent, QDropEvent
+
 ## [1.3.0] - 2026-02-08
 
 ### Added - Security & Verification

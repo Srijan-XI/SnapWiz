@@ -11,11 +11,14 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout,
                              QHBoxLayout, QPushButton, QLabel, QFileDialog, 
                              QProgressBar, QTextEdit, QTabWidget, QListWidget,
                              QMessageBox, QGroupBox, QComboBox, QSystemTrayIcon,
-                             QMenu, QAction, QShortcut, QListWidgetItem)
-from PyQt5.QtCore import Qt, QThread, pyqtSignal, QTimer
-from PyQt5.QtGui import QIcon, QFont, QPalette, QColor, QKeySequence, QPixmap
+                             QMenu, QAction, QShortcut, QListWidgetItem, QLineEdit)
+from PyQt5.QtCore import Qt, QThread, pyqtSignal, QTimer, QUrl
+from PyQt5.QtGui import QIcon, QFont, QPalette, QColor, QKeySequence, QPixmap, QDragEnterEvent, QDropEvent
 from package_handler import PackageHandler
 from logger import InstallLogger
+import config
+import language
+from language import _  # Import translation function
 import json
 import time
 
@@ -137,8 +140,12 @@ class MainWindow(QMainWindow):
         
     def init_ui(self):
         """Initialize the user interface"""
-        self.setWindowTitle("SnapWiz - The Magical Package Installer")
-        self.setGeometry(100, 100, 950, 700)
+        self.setWindowTitle(config.WINDOW_TITLE)
+        self.setGeometry(100, 100, config.WINDOW_WIDTH, config.WINDOW_HEIGHT)
+        self.setMinimumSize(config.WINDOW_MIN_WIDTH, config.WINDOW_MIN_HEIGHT)
+        
+        # Enable drag and drop
+        self.setAcceptDrops(config.DRAG_DROP_ENABLED)
         
         # Create central widget and main layout
         central_widget = QWidget()
@@ -148,32 +155,36 @@ class MainWindow(QMainWindow):
         main_layout.setContentsMargins(20, 20, 20, 20)
         
         # Header
-        header = QLabel("⚡🧙‍♂️ SnapWiz")
+        header = QLabel(config.ICONS['app'] + " " + config.APP_NAME)
         header.setAlignment(Qt.AlignCenter)
-        header_font = QFont("Arial", 24, QFont.Bold)
+        header_font = QFont("Arial", config.HEADER_FONT_SIZE, QFont.Bold)
         header.setFont(header_font)
-        header.setToolTip("Install packages in a snap, like a wizard!")
+        header.setToolTip(config.APP_DESCRIPTION)
         main_layout.addWidget(header)
         
-        subtitle = QLabel("The magical way to install .deb and .rpm packages")
+        subtitle = QLabel("The magical way to install .deb, .rpm, .snap, and .flatpak packages")
         subtitle.setAlignment(Qt.AlignCenter)
-        subtitle_font = QFont("Arial", 11)
+        subtitle_font = QFont("Arial", config.SUBTITLE_FONT_SIZE)
         subtitle.setFont(subtitle_font)
         subtitle.setStyleSheet("color: #666; margin-bottom: 10px;")
         main_layout.addWidget(subtitle)
         
+        # Drag and drop hint
+        drag_hint = QLabel("💡 Tip: Drag and drop package files here to add them!")
+        drag_hint.setAlignment(Qt.AlignCenter)
+        drag_hint.setStyleSheet("color: #3498db; font-style: italic; font-size: 10px;")
+        main_layout.addWidget(drag_hint)
+        
         # Create tab widget
         self.tabs = QTabWidget()
-        self.tabs.addTab(self.create_install_tab(), "📥 Install Package")
-        self.tabs.addTab(self.create_uninstall_tab(), "🗑️ Uninstall Package")
-        self.tabs.addTab(self.create_history_tab(), "📋 Installation History")
-        self.tabs.addTab(self.create_settings_tab(), "⚙️ Settings")
+        self.tabs.addTab(self.create_install_tab(), config.TAB_NAMES['install'])
+        self.tabs.addTab(self.create_uninstall_tab(), config.TAB_NAMES['uninstall'])
+        self.tabs.addTab(self.create_history_tab(), config.TAB_NAMES['history'])
+        self.tabs.addTab(self.create_settings_tab(), config.TAB_NAMES['settings'])
         main_layout.addWidget(self.tabs)
         
         # Status bar for shortcuts
-        self.statusBar().showMessage(
-            "💡 Shortcuts: Ctrl+O (Open) | Ctrl+I (Install) | F5 (Refresh) | Ctrl+Q (Quit)"
-        )
+        self.statusBar().showMessage(config.SHORTCUTS_DISPLAY)
         
     def setup_shortcuts(self):
         """Setup keyboard shortcuts"""
@@ -240,6 +251,82 @@ class MainWindow(QMainWindow):
         """Completely quit the application"""
         self.tray_icon.hide()
         QApplication.quit()
+    
+    def dragEnterEvent(self, event: QDragEnterEvent):
+        """Handle drag enter events"""
+        if event.mimeData().hasUrls():
+            # Check if at least one file has a supported extension
+            has_valid_file = False
+            for url in event.mimeData().urls():
+                file_path = url.toLocalFile()
+                if config.is_supported_package(file_path):
+                    has_valid_file = True
+                    break
+            
+            if has_valid_file:
+                event.acceptProposedAction()
+                self.statusBar().showMessage("📦 Drop files to add them to the installation queue...", 2000)
+            else:
+                event.ignore()
+        else:
+            event.ignore()
+    
+    def dropEvent(self, event: QDropEvent):
+        """Handle drop events"""
+        if event.mimeData().hasUrls():
+            valid_files = []
+            invalid_files = []
+            
+            for url in event.mimeData().urls():
+                file_path = url.toLocalFile()
+                
+                if os.path.isfile(file_path):
+                    if config.is_supported_package(file_path):
+                        # Check if file already in queue
+                        if file_path not in self.install_queue:
+                            valid_files.append(file_path)
+                    else:
+                        invalid_files.append(os.path.basename(file_path))
+            
+            # Add valid files to queue
+            if valid_files:
+                self.install_queue.extend(valid_files)
+                self.update_queue_display()
+                
+                # Switch to install tab
+                self.tabs.setCurrentIndex(0)
+                
+                count = len(valid_files)
+                self.statusBar().showMessage(
+                    f"✅ Added {count} package{'s' if count > 1 else ''} to queue!",
+                    3000
+                )
+                
+                # Show notification in tray
+                self.tray_icon.showMessage(
+                    "Files Added",
+                    f"Added {count} package{'s' if count > 1 else ''} to installation queue",
+                    QSystemTrayIcon.Information,
+                    2000
+                )
+            
+            # Show warning for invalid files
+            if invalid_files:
+                if len(invalid_files) <= 5:
+                    file_list = "\n".join(invalid_files)
+                else:
+                    file_list = "\n".join(invalid_files[:5]) + f"\n... and {len(invalid_files) - 5} more"
+                
+                QMessageBox.warning(
+                    self,
+                    "Unsupported Files",
+                    f"The following files are not supported package formats:\n\n{file_list}\n\n"
+                    f"Supported formats: .deb, .rpm, .snap, .flatpak"
+                )
+            
+            event.acceptProposedAction()
+        else:
+            event.ignore()
         
     def create_install_tab(self):
         """Create the installation tab with batch installation support"""
@@ -823,6 +910,25 @@ class MainWindow(QMainWindow):
         self.theme_combo.currentTextChanged.connect(self.change_theme)
         theme_layout.addWidget(self.theme_combo)
         
+        # Language selector
+        lang_label = QLabel("Language:")
+        theme_layout.addWidget(lang_label)
+        
+        self.language_combo = QComboBox()
+        # Add all supported languages
+        for code, name in language.get_available_languages():
+            self.language_combo.addItem(f"{name}", code)  # Display name, store code
+        
+        # Set current language
+        current_lang = language.get_current_language()
+        index = self.language_combo.findData(current_lang)
+        if index >= 0:
+            self.language_combo.setCurrentIndex(index)
+        
+        self.language_combo.setToolTip("Choose your preferred language / Choisissez votre langue / Wählen Sie Ihre Sprache")
+        self.language_combo.currentIndexChanged.connect(self.change_language)
+        theme_layout.addWidget(self.language_combo)
+        
         theme_group.setLayout(theme_layout)
         layout.addWidget(theme_group)
         
@@ -932,7 +1038,7 @@ class MainWindow(QMainWindow):
             self,
             "Select Package File(s)",
             os.path.expanduser("~"),
-            "Package Files (*.deb *.rpm);;Debian Packages (*.deb);;RPM Packages (*.rpm);;All Files (*)"
+            config.FILE_FILTER
         )
         
         if file_paths:
@@ -1742,6 +1848,23 @@ class MainWindow(QMainWindow):
         self.current_theme = theme
         self.apply_theme(theme)
         self.save_settings()
+    
+    def change_language(self):
+        """Change application language"""
+        # Get selected language code
+        language_code = self.language_combo.currentData()
+        
+        if language_code and language.set_language(language_code):
+            # Show message that restart is needed for full effect
+            QMessageBox.information(
+                self,
+                "Language Changed / Langue modifiée / Sprache geändert",
+                "Language preference saved.\nPlease restart the application for all changes to take effect.\n\n"
+                "Préférence de langue enregistrée.\nVeuillez redémarrer l'application pour que tous les changements prennent effet.\n\n"
+                "Spracheinstellung gespeichert.\nBitte starten Sie die Anwendung neu, damit alle Änderungen wirksam werden."
+            )
+            # Save settings
+            self.save_settings()
     
     def apply_theme(self, theme="Light"):
         """Apply the application theme"""

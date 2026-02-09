@@ -1,20 +1,22 @@
 """
 Package Handler Module
 Handles package validation, installation, and information extraction
-for .deb and .rpm packages
+for .deb, .rpm, .snap, and .flatpak packages
 """
 
 import os
 import subprocess
 import platform
+import config
 
 
 class PackageHandler:
-    """Handle package operations for .deb and .rpm files"""
+    """Handle package operations for .deb, .rpm, .snap, and .flatpak files"""
     
     def __init__(self):
-        self.supported_formats = ['.deb', '.rpm']
+        self.supported_formats = config.get_supported_extensions()
         self.package_manager = self.detect_package_manager()
+        self.available_managers = self._detect_all_managers()
     
     def detect_package_manager(self):
         """Detect the system's package manager"""
@@ -48,6 +50,17 @@ class PackageHandler:
         except (subprocess.CalledProcessError, FileNotFoundError):
             return False
     
+    def _detect_all_managers(self):
+        """Detect all available package managers on the system"""
+        available = {}
+        for fmt_name, fmt_info in config.SUPPORTED_FORMATS.items():
+            for manager in fmt_info['managers']:
+                if self._command_exists(manager):
+                    if fmt_name not in available:
+                        available[fmt_name] = []
+                    available[fmt_name].append(manager)
+        return available
+    
     def validate_package(self, package_path):
         """Validate if the package file is supported and exists"""
         if not os.path.exists(package_path):
@@ -70,6 +83,10 @@ class PackageHandler:
                 return self._get_deb_info(package_path)
             elif package_type == '.rpm':
                 return self._get_rpm_info(package_path)
+            elif package_type == '.snap':
+                return self._get_snap_info(package_path)
+            elif package_type == '.flatpak':
+                return self._get_flatpak_info(package_path)
             else:
                 return "Unsupported package format"
         except Exception as e:
@@ -154,6 +171,68 @@ class PackageHandler:
             size_bytes /= 1024.0
         
         return f"{size_bytes:.2f} TB"
+    
+    def _get_snap_info(self, package_path):
+        """Get information from .snap package"""
+        try:
+            # Snap packages need to be examined differently
+            # Try to read metadata from the package
+            result = subprocess.run(
+                ['unsquashfs', '-ll', package_path, 'meta/snap.yaml'],
+                capture_output=True,
+                text=True,
+                timeout=10
+            )
+            
+            if result.returncode == 0:
+                formatted_info = "Package Type: Snap Package 📸\n\n"
+                formatted_info += f"Filename: {os.path.basename(package_path)}\n"
+                formatted_info += f"Size: {self._get_file_size(package_path)}\n\n"
+                formatted_info += "Note: Install snapd to view detailed metadata.\n"
+                formatted_info += "After installation, use: snap info <package-name>\n"
+                return formatted_info
+            else:
+                return f"Package Type: Snap Package 📸\n\nFilename: {os.path.basename(package_path)}\nSize: {self._get_file_size(package_path)}\n\nNote: Detailed info will be available after installation."
+        except FileNotFoundError:
+            return f"Package Type: Snap Package 📸\n\nFilename: {os.path.basename(package_path)}\nSize: {self._get_file_size(package_path)}\n\nNote: Install snapd and unsquashfs for detailed package info."
+        except Exception as e:
+            return f"Package Type: Snap Package 📸\n\nFilename: {os.path.basename(package_path)}\nSize: {self._get_file_size(package_path)}\n\nNote: {str(e)}"
+    
+    def _get_flatpak_info(self, package_path):
+        """Get information from .flatpak package"""
+        try:
+            # Flatpak bundles can be inspected
+            result = subprocess.run(
+                ['flatpak', 'info', '--show-metadata', package_path],
+                capture_output=True,
+                text=True,
+                timeout=10
+            )
+            
+            if result.returncode == 0:
+                info = result.stdout
+                formatted_info = "Package Type: Flatpak Package 📱\n\n"
+                formatted_info += f"Filename: {os.path.basename(package_path)}\n"
+                formatted_info += f"Size: {self._get_file_size(package_path)}\n\n"
+                
+                # Parse metadata
+                lines = info.split('\n')
+                for line in lines:
+                    line = line.strip()
+                    if line.startswith('[Application]') or \
+                       line.startswith('name=') or \
+                       line.startswith('runtime=') or \
+                       line.startswith('sdk=') or \
+                       line.startswith('command='):
+                        formatted_info += line + '\n'
+                
+                return formatted_info if formatted_info else info
+            else:
+                return f"Package Type: Flatpak Package 📱\n\nFilename: {os.path.basename(package_path)}\nSize: {self._get_file_size(package_path)}\n\nNote: Detailed info will be available after installation."
+        except FileNotFoundError:
+            return f"Package Type: Flatpak Package 📱\n\nFilename: {os.path.basename(package_path)}\nSize: {self._get_file_size(package_path)}\n\nNote: Install flatpak for detailed package info."
+        except Exception as e:
+            return f"Package Type: Flatpak Package 📱\n\nFilename: {os.path.basename(package_path)}\nSize: {self._get_file_size(package_path)}\n\nNote: {str(e)}"
     
     def verify_package(self, package_path, checksum=None, checksum_type='sha256', check_signature=False):
         """
@@ -372,6 +451,10 @@ class PackageHandler:
                 return self._install_deb(package_path)
             elif package_type == '.rpm':
                 return self._install_rpm(package_path)
+            elif package_type == '.snap':
+                return self._install_snap(package_path)
+            elif package_type == '.flatpak':
+                return self._install_flatpak(package_path)
             else:
                 return False, "Unsupported package format"
         except Exception as e:
@@ -457,6 +540,79 @@ class PackageHandler:
             
             if result.returncode == 0:
                 return True, f"Package installed successfully!\n\n{result.stdout}"
+            else:
+                error_msg = result.stderr if result.stderr else result.stdout
+                return False, f"Installation failed:\n{error_msg}"
+                
+        except subprocess.TimeoutExpired:
+            return False, "Installation timed out. The package may be too large or there may be network issues."
+        except Exception as e:
+            return False, f"Installation error: {str(e)}"
+    
+    def _install_snap(self, package_path):
+        """Install .snap package"""
+        try:
+            # Check if snapd is running
+            if not self._command_exists('snap'):
+                return False, "Snap is not installed. Please install snapd:\n  sudo apt install snapd  # Debian/Ubuntu\n  sudo dnf install snapd  # Fedora"
+            
+            # Check if snapd service is running
+            check_service = subprocess.run(
+                ['systemctl', 'is-active', 'snapd'],
+                capture_output=True,
+                text=True
+            )
+            
+            if check_service.returncode != 0:
+                return False, "snapd service is not running. Please start it:\n  sudo systemctl start snapd\n  sudo systemctl enable snapd"
+            
+            # Install snap package with dangerous flag (for local files)
+            result = subprocess.run(
+                ['pkexec', 'snap', 'install', '--dangerous', package_path],
+                capture_output=True,
+                text=True,
+                timeout=config.INSTALLATION_TIMEOUT
+            )
+            
+            if result.returncode == 0:
+                return True, f"Snap package installed successfully!\n\n{result.stdout}"
+            else:
+                error_msg = result.stderr if result.stderr else result.stdout
+                return False, f"Installation failed:\n{error_msg}"
+                
+        except subprocess.TimeoutExpired:
+            return False, "Installation timed out. The package may be too large or there may be network issues."
+        except Exception as e:
+            return False, f"Installation error: {str(e)}"
+    
+    def _install_flatpak(self, package_path):
+        """Install .flatpak package"""
+        try:
+            # Check if flatpak is installed
+            if not self._command_exists('flatpak'):
+                return False, "Flatpak is not installed. Please install it:\n  sudo apt install flatpak  # Debian/Ubuntu\n  sudo dnf install flatpak  # Fedora"
+            
+            # Install flatpak bundle
+            # Flatpak handles permissions internally, no need for pkexec usually
+            # However, system-wide installation might require it
+            result = subprocess.run(
+                ['flatpak', 'install', '-y', '--bundle', package_path],
+                capture_output=True,
+                text=True,
+                timeout=config.INSTALLATION_TIMEOUT
+            )
+            
+            # If user installation fails, try system installation
+            if result.returncode != 0:
+                result = subprocess.run(
+                    ['pkexec', 'flatpak', 'install', '-y', '--system', '--bundle', package_path],
+                    capture_output=True,
+                    text=True,
+                    timeout=config.INSTALLATION_TIMEOUT
+                )
+            
+            if result.returncode == 0:
+                return True, f"Flatpak package installed successfully!\n\n{result.stdout}"
             else:
                 error_msg = result.stderr if result.stderr else result.stdout
                 return False, f"Installation failed:\n{error_msg}"
