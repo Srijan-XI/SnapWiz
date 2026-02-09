@@ -149,7 +149,7 @@ After installation, you can launch the application in several ways:
 #### Method 1: From Application Menu (Recommended for Beginners)
 
 1. Open your application menu/launcher
-2. Search for "Linux Package Installer"
+2. Search for "SnapWiz"
 3. Click on the icon to launch
 
 #### Method 2: From Terminal (Quick Launch)
@@ -166,14 +166,14 @@ Navigate to the project directory and run:
 
 ```bash
 # If you used the automated installer
-cd ~/path/to/Linux-pi
+cd ~/path/to/SnapWiz
 venv/bin/python main.py
 ```
 
 Or if you installed manually with a virtual environment:
 
 ```bash
-cd ~/path/to/Linux-pi
+cd ~/path/to/SnapWiz
 source venv/bin/activate
 python main.py
 ```
@@ -183,7 +183,7 @@ python main.py
 If you made main.py executable:
 
 ```bash
-cd ~/path/to/Linux-pi
+cd ~/path/to/SnapWiz
 ./main.py
 ```
 

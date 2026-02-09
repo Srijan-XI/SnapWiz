@@ -7,7 +7,7 @@ for .deb, .rpm, .snap, and .flatpak packages
 import os
 import subprocess
 import platform
-import config
+from . import config
 
 
 class PackageHandler:
@@ -624,8 +624,8 @@ class PackageHandler:
     
     def check_permissions(self):
         """Check if the user has necessary permissions"""
-        # Check if running as root or can use sudo/pkexec
-        if os.geteuid() == 0:
+        # Check if running as root (Unix/Linux only)
+        if hasattr(os, 'geteuid') and os.geteuid() == 0:  # type: ignore[attr-defined]
             return True
         
         # Check for pkexec
