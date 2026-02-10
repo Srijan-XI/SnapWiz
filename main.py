@@ -1970,17 +1970,7 @@ class MainWindow(QMainWindow):
                     color: #e0e0e0;
                 }
             """)
-            
-            # Update dynamic elements for dark theme
-            self.path_label.setStyleSheet("""
-                QLabel {
-                    padding: 10px;
-                    border: 2px dashed #3498db;
-                    border-radius: 5px;
-                    background-color: #252525;
-                    color: #e0e0e0;
-                }
-            """)
+
         else:
             # Light Theme  
             self.setStyleSheet("""
@@ -2083,17 +2073,7 @@ class MainWindow(QMainWindow):
                     color: #2c3e50;
                 }
             """)
-            
-            # Update dynamic elements for light theme
-            self.path_label.setStyleSheet("""
-                QLabel {
-                    padding: 10px;
-                    border: 2px dashed #3498db;
-                    border-radius: 5px;
-                    background-color: #ecf0f1;
-                    color: #2c3e50;
-                }
-            """)
+
     
     def load_settings(self):
         """Load application settings"""
