@@ -162,12 +162,11 @@ class MainWindow(QMainWindow):
                 background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
                     stop:0 #667eea, stop:0.5 #764ba2, stop:1 #f093fb);
                 border-radius: 0px;
-                padding: 30px;
             }
         """)
         header_layout = QVBoxLayout(header_container)
-        header_layout.setSpacing(8)
-        header_layout.setContentsMargins(20, 20, 20, 20)
+        header_layout.setSpacing(6)
+        header_layout.setContentsMargins(20, 14, 20, 14)
         
         # App icon and title
         header = QLabel("🧙‍♂️ " + config.APP_NAME)
@@ -184,7 +183,7 @@ class MainWindow(QMainWindow):
         # Subtitle with better styling
         subtitle = QLabel("The magical way to install packages")
         subtitle.setAlignment(Qt.AlignCenter)
-        subtitle_font = QFont("Segoe UI", 12)
+        subtitle_font = QFont("Segoe UI", config.SUBTITLE_FONT_SIZE)
         subtitle.setFont(subtitle_font)
         subtitle.setStyleSheet("""
             color: rgba(255, 255, 255, 0.95);
@@ -442,17 +441,9 @@ class MainWindow(QMainWindow):
         
         # Modern card-style group for package selection
         select_group = QGroupBox()
-        select_group.setStyleSheet("""
-            QGroupBox {
-                background: white;
-                border: none;
-                border-radius: 12px;
-                padding: 20px;
-                margin: 2px;
-            }
-        """)
         select_layout = QVBoxLayout()
         select_layout.setSpacing(15)
+        select_layout.setContentsMargins(15, 15, 15, 15)
         
         # Section title with description
         title_label = QLabel("📦 Add Packages")
@@ -470,7 +461,7 @@ class MainWindow(QMainWindow):
         
         self.browse_btn = QPushButton("📂  Browse & Add")
         self.browse_btn.setFixedHeight(45)
-        self.browse_btn.setFixedWidth(180)
+        self.browse_btn.setMinimumWidth(160)
         self.browse_btn.setCursor(Qt.PointingHandCursor)
         self.browse_btn.setToolTip("Add one or more packages to the queue (Ctrl+O)")
         self.browse_btn.clicked.connect(self.browse_package)
@@ -499,7 +490,7 @@ class MainWindow(QMainWindow):
         
         self.clear_queue_btn = QPushButton("🗑️  Clear All")
         self.clear_queue_btn.setFixedHeight(45)
-        self.clear_queue_btn.setFixedWidth(140)
+        self.clear_queue_btn.setMinimumWidth(120)
         self.clear_queue_btn.setCursor(Qt.PointingHandCursor)
         self.clear_queue_btn.setToolTip("Remove all packages from the queue")
         self.clear_queue_btn.clicked.connect(self.clear_queue)
@@ -533,17 +524,9 @@ class MainWindow(QMainWindow):
         
         # Installation Queue Card
         queue_group = QGroupBox()
-        queue_group.setStyleSheet("""
-            QGroupBox {
-                background: white;
-                border: none;
-                border-radius: 12px;
-                padding: 20px;
-                margin: 2px;
-            }
-        """)
         queue_layout = QVBoxLayout()
         queue_layout.setSpacing(12)
+        queue_layout.setContentsMargins(15, 15, 15, 15)
         
         # Queue title with count
         queue_header = QHBoxLayout()
@@ -620,17 +603,9 @@ class MainWindow(QMainWindow):
         
         # Installation Progress Card
         progress_group = QGroupBox()
-        progress_group.setStyleSheet("""
-            QGroupBox {
-                background: white;
-                border: none;
-                border-radius: 12px;
-                padding: 20px;
-                margin: 2px;
-            }
-        """)
         progress_layout = QVBoxLayout()
-        progress_layout.setSpacing(15)
+        progress_layout.setSpacing(12)
+        progress_layout.setContentsMargins(15, 15, 15, 15)
         
         # Progress title
         progress_title = QLabel("⚡ Installation Progress")
@@ -714,17 +689,9 @@ class MainWindow(QMainWindow):
         
         # Log output card
         log_group = QGroupBox()
-        log_group.setStyleSheet("""
-            QGroupBox {
-                background: white;
-                border: none;
-                border-radius: 12px;
-                padding: 20px;
-                margin: 2px;
-            }
-        """)
         log_layout = QVBoxLayout()
         log_layout.setSpacing(12)
+        log_layout.setContentsMargins(15, 15, 15, 15)
         
         log_header = QHBoxLayout()
         log_title = QLabel("📝 Installation Log")
@@ -758,8 +725,8 @@ class MainWindow(QMainWindow):
         
         self.log_output = QTextEdit()
         self.log_output.setReadOnly(True)
-        self.log_output.setMinimumHeight(100)
-        self.log_output.setMaximumHeight(120)
+        self.log_output.setMinimumHeight(150)
+        self.log_output.setMaximumHeight(220)
         self.log_output.setToolTip("Installation commands and output")
         self.log_output.setStyleSheet("""
             QTextEdit {
@@ -785,7 +752,7 @@ class MainWindow(QMainWindow):
         
         self.install_btn = QPushButton("✨  Start Installation")
         self.install_btn.setFixedHeight(50)
-        self.install_btn.setFixedWidth(240)
+        self.install_btn.setMinimumWidth(200)
         self.install_btn.setCursor(Qt.PointingHandCursor)
         self.install_btn.setEnabled(False)
         self.install_btn.setToolTip("Install all packages in the queue (Ctrl+I)")
@@ -819,7 +786,7 @@ class MainWindow(QMainWindow):
         
         self.cancel_btn = QPushButton("⏹️  Cancel")
         self.cancel_btn.setFixedHeight(50)
-        self.cancel_btn.setFixedWidth(140)
+        self.cancel_btn.setMinimumWidth(120)
         self.cancel_btn.setCursor(Qt.PointingHandCursor)
         self.cancel_btn.setEnabled(False)
         self.cancel_btn.setToolTip("Cancel the current batch installation")
@@ -866,9 +833,15 @@ class MainWindow(QMainWindow):
     
     def create_uninstall_tab(self):
         """Create the uninstall tab for removing installed packages"""
+        from PyQt5.QtWidgets import QScrollArea
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setFrameShape(QScrollArea.NoFrame)
+        scroll.setStyleSheet("QScrollArea { border: none; background: transparent; }")
         tab = QWidget()
         layout = QVBoxLayout(tab)
         layout.setSpacing(15)
+        layout.setContentsMargins(15, 15, 15, 15)
         
         # Info label
         info = QLabel("🗑️ Uninstall Installed Packages")
@@ -1004,14 +977,22 @@ class MainWindow(QMainWindow):
         # Load installed packages on tab creation
         self.all_installed_packages = []
         QTimer.singleShot(100, self.load_installed_packages)  # Load after UI is ready
-        
-        return tab
+
+        layout.addStretch()
+        scroll.setWidget(tab)
+        return scroll
     
     
     def create_history_tab(self):
         """Create the installation history tab with search and filter"""
+        from PyQt5.QtWidgets import QScrollArea
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setFrameShape(QScrollArea.NoFrame)
+        scroll.setStyleSheet("QScrollArea { border: none; background: transparent; }")
         tab = QWidget()
         layout = QVBoxLayout(tab)
+        layout.setContentsMargins(15, 15, 15, 15)
         
         # Info label
         info = QLabel("📋 Installation History - Search and filter your installations")
@@ -1206,10 +1187,11 @@ class MainWindow(QMainWindow):
         
         button_layout.addStretch()
         layout.addLayout(button_layout)
-        
-        return tab
-    
-    
+
+        scroll.setWidget(tab)
+        return scroll
+
+
     def create_settings_tab(self):
         """Create the settings tab with modern card-based design"""
         from PyQt5.QtWidgets import QScrollArea
@@ -1228,17 +1210,9 @@ class MainWindow(QMainWindow):
         
         # Appearance Settings Card
         theme_group = QGroupBox()
-        theme_group.setStyleSheet("""
-            QGroupBox {
-                background: white;
-                border: none;
-                border-radius: 12px;
-                padding: 20px;
-                margin: 2px;
-            }
-        """)
         theme_layout = QVBoxLayout()
         theme_layout.setSpacing(15)
+        theme_layout.setContentsMargins(15, 15, 15, 15)
         
         # Section title
         theme_title = QLabel("🎨 Appearance")
@@ -1347,17 +1321,9 @@ class MainWindow(QMainWindow):
         
         # Package Manager Card
         pm_group = QGroupBox()
-        pm_group.setStyleSheet("""
-            QGroupBox {
-                background: white;
-                border: none;
-                border-radius: 12px;
-                padding: 20px;
-                margin: 2px;
-            }
-        """)
         pm_layout = QVBoxLayout()
         pm_layout.setSpacing(15)
+        pm_layout.setContentsMargins(15, 15, 15, 15)
         
         pm_title = QLabel("📦 Package Manager")
         pm_title.setFont(QFont("Segoe UI", 14, QFont.Bold))
@@ -1385,17 +1351,9 @@ class MainWindow(QMainWindow):
         
         # Package Verification Card
         verify_group = QGroupBox()
-        verify_group.setStyleSheet("""
-            QGroupBox {
-                background: white;
-                border: none;
-                border-radius: 12px;
-                padding: 20px;
-                margin: 2px;
-            }
-        """)
         verify_layout = QVBoxLayout()
         verify_layout.setSpacing(15)
+        verify_layout.setContentsMargins(15, 15, 15, 15)
         
         verify_title = QLabel("🔐 Security & Verification")
         verify_title.setFont(QFont("Segoe UI", 14, QFont.Bold))
@@ -1547,17 +1505,9 @@ class MainWindow(QMainWindow):
         
         # About Card
         about_group = QGroupBox()
-        about_group.setStyleSheet("""
-            QGroupBox {
-                background: white;
-                border: none;
-                border-radius: 12px;
-                padding: 20px;
-                margin: 2px;
-            }
-        """)
         about_layout = QVBoxLayout()
         about_layout.setSpacing(15)
+        about_layout.setContentsMargins(15, 15, 15, 15)
         
         about_title = QLabel("ℹ️ About SnapWiz")
         about_title.setFont(QFont("Segoe UI", 14, QFont.Bold))
@@ -1566,7 +1516,7 @@ class MainWindow(QMainWindow):
         
         about_text = QLabel(
             "<div style='line-height: 1.6;'>"
-            "<p style='font-size: 13px; color: #667eea; font-weight: 600; margin: 0;'>⚡🧙‍♂️ SnapWiz v1.0</p>"
+            f"<p style='font-size: 13px; color: #667eea; font-weight: 600; margin: 0;'>⚡🧙‍♂️ SnapWiz v{config.APP_VERSION}</p>"
             "<p style='font-size: 11px; color: #7f8c8d; font-style: italic; margin: 5px 0 15px 0;'>"
             "Install packages in a snap, like a wizard!</p>"
             "<p style='font-size: 11px; color: #2c3e50; margin: 8px 0;'>"
@@ -2443,23 +2393,74 @@ class MainWindow(QMainWindow):
     def apply_theme(self, theme="Light"):
         """Apply the application theme - simplified for modern design"""
         if theme == "Dark":
-            # Dark Theme - set base background
             self.setStyleSheet("""
-                QMainWindow {
-                    background-color: #1a1a2e;
+                QMainWindow { background-color: #1a1a2e; }
+                QMainWindow > QWidget { background-color: #1a1a2e; }
+                QScrollArea { background-color: #1a1a2e; }
+                QScrollArea > QWidget > QWidget { background-color: #1a1a2e; }
+                QGroupBox {
+                    background-color: #16213e;
+                    border: 1px solid #0f3460;
+                    border-radius: 12px;
+                    color: #ecf0f1;
                 }
-                QWidget {
-                    background-color: #1a1a2e;
+                QLabel { color: #ecf0f1; background: transparent; }
+                QListWidget {
+                    background-color: #16213e;
+                    color: #ecf0f1;
+                    border: 1px solid #0f3460;
+                    border-radius: 8px;
+                }
+                QListWidget::item { color: #ecf0f1; }
+                QLineEdit {
+                    background-color: #16213e;
+                    color: #ecf0f1;
+                    border: 2px solid #0f3460;
+                    border-radius: 8px;
+                }
+                QComboBox {
+                    background-color: #16213e;
+                    color: #ecf0f1;
+                    border: 2px solid #0f3460;
+                    border-radius: 8px;
+                }
+                QComboBox QAbstractItemView {
+                    background-color: #16213e;
+                    color: #ecf0f1;
+                }
+                QCheckBox { color: #ecf0f1; background: transparent; }
+                QTabWidget::pane { background: transparent; }
+                QTabBar::tab { color: #95a5a6; background: transparent; }
+                QTabBar::tab:selected { color: #667eea; }
+                QStatusBar { background-color: #16213e; color: #95a5a6; }
+                QScrollBar:vertical {
+                    background: #16213e;
+                    width: 8px;
+                }
+                QScrollBar::handle:vertical {
+                    background: #0f3460;
+                    border-radius: 4px;
                 }
             """)
         else:
-            # Light Theme - set base background
             self.setStyleSheet("""
-                QMainWindow {
-                    background-color: #f5f6fa;
+                QMainWindow { background-color: #f5f6fa; }
+                QMainWindow > QWidget { background-color: #f5f6fa; }
+                QScrollArea { background-color: #f5f6fa; }
+                QScrollArea > QWidget > QWidget { background-color: #f5f6fa; }
+                QGroupBox {
+                    background-color: white;
+                    border: none;
+                    border-radius: 12px;
                 }
-                QWidget {
-                    background-color: #f5f6fa;
+                QLabel { background: transparent; }
+                QScrollBar:vertical {
+                    background: #f5f6fa;
+                    width: 8px;
+                }
+                QScrollBar::handle:vertical {
+                    background: #bdc3c7;
+                    border-radius: 4px;
                 }
             """)
     
