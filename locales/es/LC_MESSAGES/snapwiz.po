@@ -1,0 +1,256 @@
+# SnapWiz Spanish Translation
+# Traducción al español de SnapWiz
+
+msgid ""
+msgstr ""
+"Project-Id-Version: SnapWiz 1.4.0\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "app_name"
+msgstr "SnapWiz"
+
+msgid "app_tagline"
+msgstr "El instalador mágico de paquetes"
+
+msgid "app_description"
+msgstr "¡Instala paquetes en un instante, como un mago!"
+
+msgid "subtitle"
+msgstr "La forma mágica de instalar paquetes .deb, .rpm, .snap y .flatpak"
+
+msgid "drag_hint"
+msgstr "💡 Consejo: ¡Arrastra y suelta archivos de paquetes aquí para agregarlos!"
+
+msgid "tab_install"
+msgstr "📥 Instalar paquete"
+
+msgid "tab_uninstall"
+msgstr "🗑️ Desinstalar paquete"
+
+msgid "tab_history"
+msgstr "📋 Historial de instalación"
+
+msgid "tab_settings"
+msgstr "⚙️ Configuración"
+
+msgid "btn_browse"
+msgstr "📂 Agregar paquete..."
+
+msgid "btn_install"
+msgstr "✅ Iniciar instalación por lotes"
+
+msgid "btn_cancel"
+msgstr "⏹️ Cancelar instalación"
+
+msgid "btn_clear"
+msgstr "🔄 Limpiar selección"
+
+msgid "btn_refresh"
+msgstr "🔄 Actualizar"
+
+msgid "btn_export"
+msgstr "📤 Exportar"
+
+msgid "btn_import"
+msgstr "📥 Importar"
+
+msgid "btn_clear_history"
+msgstr "🗑️ Limpiar historial"
+
+msgid "btn_remove_queue"
+msgstr "❌ Quitar de la cola"
+
+msgid "btn_uninstall"
+msgstr "🗑️ Desinstalar seleccionados"
+
+msgid "label_package_info"
+msgstr "📦 Información del paquete"
+
+msgid "label_installation_progress"
+msgstr "⚙️ Progreso de instalación"
+
+msgid "label_installation_log"
+msgstr "📋 Registro de instalación"
+
+msgid "label_installation_queue"
+msgstr "📋 Cola de instalación"
+
+msgid "label_search"
+msgstr "🔍 Buscar paquetes"
+
+msgid "label_filter_status"
+msgstr "Filtrar por estado"
+
+msgid "label_filter_type"
+msgstr "Filtrar por tipo"
+
+msgid "label_theme"
+msgstr "Tema"
+
+msgid "label_language"
+msgstr "Idioma"
+
+msgid "label_package_manager"
+msgstr "Gestor de paquetes"
+
+msgid "label_app_version"
+msgstr "Versión de la aplicación"
+
+msgid "label_security"
+msgstr "🔐 Configuración de seguridad"
+
+msgid "status_ready"
+msgstr "Listo"
+
+msgid "status_installing"
+msgstr "Instalando..."
+
+msgid "status_waiting"
+msgstr "Esperando..."
+
+msgid "status_completed"
+msgstr "Completado"
+
+msgid "status_failed"
+msgstr "Fallido"
+
+msgid "status_cancelled"
+msgstr "Cancelado"
+
+msgid "msg_no_package"
+msgstr "Por favor, selecciona primero un archivo de paquete."
+
+msgid "msg_installation_complete"
+msgstr "¡Paquete instalado correctamente!"
+
+msgid "msg_installation_failed"
+msgstr "La instalación falló. Consulta el registro para más detalles."
+
+msgid "msg_confirm_clear"
+msgstr "¿Estás seguro de que quieres limpiar la selección?"
+
+msgid "msg_confirm_clear_history"
+msgstr "¿Estás seguro de que quieres borrar todo el historial de instalación? Esto no se puede deshacer."
+
+msgid "msg_confirm_cancel"
+msgstr "¿Estás seguro de que quieres cancelar la instalación?"
+
+msgid "msg_no_packages_queue"
+msgstr "No hay paquetes en la cola. Agrega paquetes usando el botón de explorar o arrastrando y soltando."
+
+msgid "msg_files_added"
+msgstr "¡{count} paquete(s) agregado(s) a la cola!"
+
+msgid "msg_unsupported_files"
+msgstr "Los siguientes archivos no son formatos de paquetes compatibles:"
+
+msgid "msg_queue_empty"
+msgstr "La cola está vacía"
+
+msgid "msg_installing_package"
+msgstr "Instalando paquete {current} de {total}"
+
+msgid "tooltip_browse"
+msgstr "Buscar archivos de paquetes para agregar a la cola de instalación"
+
+msgid "tooltip_install"
+msgstr "Instalar todos los paquetes en la cola"
+
+msgid "tooltip_cancel"
+msgstr "Cancelar la instalación actual"
+
+msgid "tooltip_clear"
+msgstr "Limpiar la selección actual"
+
+msgid "tooltip_refresh"
+msgstr "Actualizar la lista"
+
+msgid "tooltip_remove_queue"
+msgstr "Quitar el paquete seleccionado de la cola"
+
+msgid "tooltip_drag_drop"
+msgstr "Puedes arrastrar y soltar archivos de paquetes aquí"
+
+msgid "settings_appearance"
+msgstr "Apariencia"
+
+msgid "settings_security"
+msgstr "Seguridad"
+
+msgid "settings_language"
+msgstr "Idioma"
+
+msgid "settings_about"
+msgstr "Acerca de"
+
+msgid "verify_integrity"
+msgstr "Verificar integridad del paquete"
+
+msgid "verify_signature"
+msgstr "Verificar firma GPG"
+
+msgid "checksum_type"
+msgstr "Tipo de suma de verificación"
+
+msgid "theme_light"
+msgstr "Claro"
+
+msgid "theme_dark"
+msgstr "Oscuro"
+
+msgid "history_package"
+msgstr "Paquete"
+
+msgid "history_status"
+msgstr "Estado"
+
+msgid "history_date"
+msgstr "Fecha"
+
+msgid "history_type"
+msgstr "Tipo"
+
+msgid "history_export_json"
+msgstr "Exportar como JSON"
+
+msgid "history_export_csv"
+msgstr "Exportar como CSV"
+
+msgid "history_import"
+msgstr "Importar historial"
+
+msgid "history_no_entries"
+msgstr "No hay historial de instalación disponible."
+
+msgid "shortcuts_display"
+msgstr "💡 Atajos: Ctrl+O (Abrir) | Ctrl+I (Instalar) | F5 (Actualizar) | Ctrl+Q (Salir)"
+
+msgid "error_title"
+msgstr "Error"
+
+msgid "error_no_package_manager"
+msgstr "No se encontró un gestor de paquetes adecuado para este tipo de archivo."
+
+msgid "error_permission_denied"
+msgstr "Permiso denegado. Asegúrate de tener privilegios de administrador."
+
+msgid "error_timeout"
+msgstr "Tiempo de instalación agotado. El paquete puede ser demasiado grande o puede haber problemas de red."
+
+msgid "error_verification_failed"
+msgstr "La verificación del paquete falló. El paquete puede estar corrupto o manipulado."
+
+msgid "notif_files_added"
+msgstr "Archivos agregados"
+
+msgid "notif_installation_complete"
+msgstr "Instalación completada"
+
+msgid "notif_installation_failed"
+msgstr "Instalación fallida"
+
+msgid "notif_minimized"
+msgstr "Aplicación minimizada en la bandeja. Haz doble clic para restaurar."

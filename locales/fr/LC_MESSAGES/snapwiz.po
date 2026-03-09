@@ -1,0 +1,274 @@
+# SnapWiz French Translation
+# Traduction française de SnapWiz
+
+msgid ""
+msgstr ""
+"Project-Id-Version: SnapWiz 1.4.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-09 17:51+0530\n"
+"PO-Revision-Date: 2026-02-09 17:51+0530\n"
+"Last-Translator: SnapWiz Team\n"
+"Language-Team: French\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# Application
+msgid "app_name"
+msgstr "SnapWiz"
+
+msgid "app_tagline"
+msgstr "L'installateur magique de paquets"
+
+msgid "app_description"
+msgstr "Installez des paquets en un clin d'œil, comme un magicien !"
+
+msgid "subtitle"
+msgstr "La façon magique d'installer les paquets .deb, .rpm, .snap et .flatpak"
+
+msgid "drag_hint"
+msgstr "💡 Astuce : Glissez-déposez les fichiers de paquets ici pour les ajouter !"
+
+# Tabs
+msgid "tab_install"
+msgstr "📥 Installer un paquet"
+
+msgid "tab_uninstall"
+msgstr "🗑️ Désinstaller un paquet"
+
+msgid "tab_history"
+msgstr "📋 Historique d'installation"
+
+msgid "tab_settings"
+msgstr "⚙️ Paramètres"
+
+# Buttons
+msgid "btn_browse"
+msgstr "📂 Ajouter un paquet..."
+
+msgid "btn_install"
+msgstr "✅ Démarrer l'installation par lots"
+
+msgid "btn_cancel"
+msgstr "⏹️ Annuler l'installation"
+
+msgid "btn_clear"
+msgstr "🔄 Effacer la sélection"
+
+msgid "btn_refresh"
+msgstr "🔄 Actualiser"
+
+msgid "btn_export"
+msgstr "📤 Exporter"
+
+msgid "btn_import"
+msgstr "📥 Importer"
+
+msgid "btn_clear_history"
+msgstr "🗑️ Effacer l'historique"
+
+msgid "btn_remove_queue"
+msgstr "❌ Retirer de la file"
+
+msgid "btn_uninstall"
+msgstr "🗑️ Désinstaller la sélection"
+
+# Labels
+msgid "label_package_info"
+msgstr "📦 Informations sur le paquet"
+
+msgid "label_installation_progress"
+msgstr "⚙️ Progression de l'installation"
+
+msgid "label_installation_log"
+msgstr "📋 Journal d'installation"
+
+msgid "label_installation_queue"
+msgstr "📋 File d'installation"
+
+msgid "label_search"
+msgstr "🔍 Rechercher des paquets"
+
+msgid "label_filter_status"
+msgstr "Filtrer par statut"
+
+msgid "label_filter_type"
+msgstr "Filtrer par type"
+
+msgid "label_theme"
+msgstr "Thème"
+
+msgid "label_language"
+msgstr "Langue"
+
+msgid "label_package_manager"
+msgstr "Gestionnaire de paquets"
+
+msgid "label_app_version"
+msgstr "Version de l'application"
+
+msgid "label_security"
+msgstr "🔐 Paramètres de sécurité"
+
+# Status
+msgid "status_ready"
+msgstr "Prêt"
+
+msgid "status_installing"
+msgstr "Installation..."
+
+msgid "status_waiting"
+msgstr "En attente..."
+
+msgid "status_completed"
+msgstr "Terminé"
+
+msgid "status_failed"
+msgstr "Échoué"
+
+msgid "status_cancelled"
+msgstr "Annulé"
+
+# Messages
+msgid "msg_no_package"
+msgstr "Veuillez d'abord sélectionner un fichier de paquet."
+
+msgid "msg_installation_complete"
+msgstr "Paquet installé avec succès !"
+
+msgid "msg_installation_failed"
+msgstr "L'installation a échoué. Vérifiez le journal pour plus de détails."
+
+msgid "msg_confirm_clear"
+msgstr "Êtes-vous sûr de vouloir effacer la sélection ?"
+
+msgid "msg_confirm_clear_history"
+msgstr "Êtes-vous sûr de vouloir effacer tout l'historique d'installation ? Cette action est irréversible."
+
+msgid "msg_confirm_cancel"
+msgstr "Êtes-vous sûr de vouloir annuler l'installation ?"
+
+msgid "msg_no_packages_queue"
+msgstr "Aucun paquet dans la file. Ajoutez des paquets à l'aide du bouton de navigation ou par glisser-déposer."
+
+msgid "msg_files_added"
+msgstr "{count} paquet(s) ajouté(s) à la file !"
+
+msgid "msg_unsupported_files"
+msgstr "Les fichiers suivants ne sont pas des formats de paquets pris en charge :"
+
+msgid "msg_queue_empty"
+msgstr "La file est vide"
+
+msgid "msg_installing_package"
+msgstr "Installation du paquet {current} sur {total}"
+
+# Tooltips
+msgid "tooltip_browse"
+msgstr "Rechercher des fichiers de paquets à ajouter à la file d'installation"
+
+msgid "tooltip_install"
+msgstr "Installer tous les paquets dans la file"
+
+msgid "tooltip_cancel"
+msgstr "Annuler l'installation en cours"
+
+msgid "tooltip_clear"
+msgstr "Effacer la sélection actuelle"
+
+msgid "tooltip_refresh"
+msgstr "Actualiser la liste"
+
+msgid "tooltip_remove_queue"
+msgstr "Retirer le paquet sélectionné de la file"
+
+msgid "tooltip_drag_drop"
+msgstr "Vous pouvez glisser-déposer des fichiers de paquets ici"
+
+# Settings
+msgid "settings_appearance"
+msgstr "Apparence"
+
+msgid "settings_security"
+msgstr "Sécurité"
+
+msgid "settings_language"
+msgstr "Langue"
+
+msgid "settings_about"
+msgstr "À propos"
+
+msgid "verify_integrity"
+msgstr "Vérifier l'intégrité du paquet"
+
+msgid "verify_signature"
+msgstr "Vérifier la signature GPG"
+
+msgid "checksum_type"
+msgstr "Type de somme de contrôle"
+
+# Themes
+msgid "theme_light"
+msgstr "Clair"
+
+msgid "theme_dark"
+msgstr "Sombre"
+
+# History
+msgid "history_package"
+msgstr "Paquet"
+
+msgid "history_status"
+msgstr "Statut"
+
+msgid "history_date"
+msgstr "Date"
+
+msgid "history_type"
+msgstr "Type"
+
+msgid "history_export_json"
+msgstr "Exporter en JSON"
+
+msgid "history_export_csv"
+msgstr "Exporter en CSV"
+
+msgid "history_import"
+msgstr "Importer l'historique"
+
+msgid "history_no_entries"
+msgstr "Aucun historique d'installation disponible."
+
+# Shortcuts
+msgid "shortcuts_display"
+msgstr "💡 Raccourcis : Ctrl+O (Ouvrir) | Ctrl+I (Installer) | F5 (Actualiser) | Ctrl+Q (Quitter)"
+
+# Errors
+msgid "error_title"
+msgstr "Erreur"
+
+msgid "error_no_package_manager"
+msgstr "Aucun gestionnaire de paquets approprié trouvé pour ce type de fichier."
+
+msgid "error_permission_denied"
+msgstr "Permission refusée. Assurez-vous d'avoir les privilèges administrateur."
+
+msgid "error_timeout"
+msgstr "Le délai d'installation a expiré. Le paquet peut être trop volumineux ou il peut y avoir des problèmes de réseau."
+
+msgid "error_verification_failed"
+msgstr "La vérification du paquet a échoué. Le paquet peut être corrompu ou altéré."
+
+# Notifications
+msgid "notif_files_added"
+msgstr "Fichiers ajoutés"
+
+msgid "notif_installation_complete"
+msgstr "Installation terminée"
+
+msgid "notif_installation_failed"
+msgstr "Installation échouée"
+
+msgid "notif_minimized"
+msgstr "Application réduite dans la barre d'état. Double-cliquez pour restaurer."

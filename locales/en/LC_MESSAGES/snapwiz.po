@@ -1,0 +1,274 @@
+# SnapWiz Translation Template
+# This file contains all translatable strings
+
+msgid ""
+msgstr ""
+"Project-Id-Version: SnapWiz 1.4.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-09 17:51+0530\n"
+"PO-Revision-Date: 2026-02-09 17:51+0530\n"
+"Last-Translator: SnapWiz Team\n"
+"Language-Team: English\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# Application
+msgid "app_name"
+msgstr "SnapWiz"
+
+msgid "app_tagline"
+msgstr "The Magical Package Installer"
+
+msgid "app_description"
+msgstr "Install packages in a snap, like a wizard!"
+
+msgid "subtitle"
+msgstr "The magical way to install .deb, .rpm, .snap, and .flatpak packages"
+
+msgid "drag_hint"
+msgstr "💡 Tip: Drag and drop package files here to add them!"
+
+# Tabs
+msgid "tab_install"
+msgstr "📥 Install Package"
+
+msgid "tab_uninstall"
+msgstr "🗑️ Uninstall Package"
+
+msgid "tab_history"
+msgstr "📋 Installation History"
+
+msgid "tab_settings"
+msgstr "⚙️ Settings"
+
+# Buttons
+msgid "btn_browse"
+msgstr "📂 Add Package..."
+
+msgid "btn_install"
+msgstr "✅ Start Batch Installation"
+
+msgid "btn_cancel"
+msgstr "⏹️ Cancel Installation"
+
+msgid "btn_clear"
+msgstr "🔄 Clear Selection"
+
+msgid "btn_refresh"
+msgstr "🔄 Refresh"
+
+msgid "btn_export"
+msgstr "📤 Export"
+
+msgid "btn_import"
+msgstr "📥 Import"
+
+msgid "btn_clear_history"
+msgstr "🗑️ Clear History"
+
+msgid "btn_remove_queue"
+msgstr "❌ Remove from Queue"
+
+msgid "btn_uninstall"
+msgstr "🗑️ Uninstall Selected"
+
+# Labels
+msgid "label_package_info"
+msgstr "📦 Package Information"
+
+msgid "label_installation_progress"
+msgstr "⚙️ Installation Progress"
+
+msgid "label_installation_log"
+msgstr "📋 Installation Log"
+
+msgid "label_installation_queue"
+msgstr "📋 Installation Queue"
+
+msgid "label_search"
+msgstr "🔍 Search Packages"
+
+msgid "label_filter_status"
+msgstr "Filter by Status"
+
+msgid "label_filter_type"
+msgstr "Filter by Type"
+
+msgid "label_theme"
+msgstr "Theme"
+
+msgid "label_language"
+msgstr "Language"
+
+msgid "label_package_manager"
+msgstr "Package Manager"
+
+msgid "label_app_version"
+msgstr "Application Version"
+
+msgid "label_security"
+msgstr "🔐 Security Settings"
+
+# Status
+msgid "status_ready"
+msgstr "Ready"
+
+msgid "status_installing"
+msgstr "Installing..."
+
+msgid "status_waiting"
+msgstr "Waiting..."
+
+msgid "status_completed"
+msgstr "Completed"
+
+msgid "status_failed"
+msgstr "Failed"
+
+msgid "status_cancelled"
+msgstr "Cancelled"
+
+# Messages
+msgid "msg_no_package"
+msgstr "Please select a package file first."
+
+msgid "msg_installation_complete"
+msgstr "Package installed successfully!"
+
+msgid "msg_installation_failed"
+msgstr "Installation failed. Check the log for details."
+
+msgid "msg_confirm_clear"
+msgstr "Are you sure you want to clear the selection?"
+
+msgid "msg_confirm_clear_history"
+msgstr "Are you sure you want to clear all installation history? This cannot be undone."
+
+msgid "msg_confirm_cancel"
+msgstr "Are you sure you want to cancel the installation?"
+
+msgid "msg_no_packages_queue"
+msgstr "No packages in queue. Add packages using the browse button or drag and drop."
+
+msgid "msg_files_added"
+msgstr "Added {count} package(s) to queue!"
+
+msgid "msg_unsupported_files"
+msgstr "The following files are not supported package formats:"
+
+msgid "msg_queue_empty"
+msgstr "Queue is empty"
+
+msgid "msg_installing_package"
+msgstr "Installing package {current} of {total}"
+
+# Tooltips
+msgid "tooltip_browse"
+msgstr "Browse for package files to add to the installation queue"
+
+msgid "tooltip_install"
+msgstr "Install all packages in the queue"
+
+msgid "tooltip_cancel"
+msgstr "Cancel the current installation"
+
+msgid "tooltip_clear"
+msgstr "Clear the current selection"
+
+msgid "tooltip_refresh"
+msgstr "Refresh the list"
+
+msgid "tooltip_remove_queue"
+msgstr "Remove selected package from the queue"
+
+msgid "tooltip_drag_drop"
+msgstr "You can drag and drop package files here"
+
+# Settings
+msgid "settings_appearance"
+msgstr "Appearance"
+
+msgid "settings_security"
+msgstr "Security"
+
+msgid "settings_language"
+msgstr "Language"
+
+msgid "settings_about"
+msgstr "About"
+
+msgid "verify_integrity"
+msgstr "Verify package integrity"
+
+msgid "verify_signature"
+msgstr "Verify GPG signature"
+
+msgid "checksum_type"
+msgstr "Checksum Type"
+
+# Themes
+msgid "theme_light"
+msgstr "Light"
+
+msgid "theme_dark"
+msgstr "Dark"
+
+# History
+msgid "history_package"
+msgstr "Package"
+
+msgid "history_status"
+msgstr "Status"
+
+msgid "history_date"
+msgstr "Date"
+
+msgid "history_type"
+msgstr "Type"
+
+msgid "history_export_json"
+msgstr "Export as JSON"
+
+msgid "history_export_csv"
+msgstr "Export as CSV"
+
+msgid "history_import"
+msgstr "Import History"
+
+msgid "history_no_entries"
+msgstr "No installation history available."
+
+# Shortcuts
+msgid "shortcuts_display"
+msgstr "💡 Shortcuts: Ctrl+O (Open) | Ctrl+I (Install) | F5 (Refresh) | Ctrl+Q (Quit)"
+
+# Errors
+msgid "error_title"
+msgstr "Error"
+
+msgid "error_no_package_manager"
+msgstr "No suitable package manager found for this file type."
+
+msgid "error_permission_denied"
+msgstr "Permission denied. Make sure you have administrative privileges."
+
+msgid "error_timeout"
+msgstr "Installation timed out. The package may be too large or there may be network issues."
+
+msgid "error_verification_failed"
+msgstr "Package verification failed. The package may be corrupted or tampered with."
+
+# Notifications
+msgid "notif_files_added"
+msgstr "Files Added"
+
+msgid "notif_installation_complete"
+msgstr "Installation Complete"
+
+msgid "notif_installation_failed"
+msgstr "Installation Failed"
+
+msgid "notif_minimized"
+msgstr "Application minimized to tray. Double-click to restore."

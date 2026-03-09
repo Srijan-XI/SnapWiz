@@ -1,0 +1,256 @@
+# SnapWiz German Translation
+# Deutsche Übersetzung von SnapWiz
+
+msgid ""
+msgstr ""
+"Project-Id-Version: SnapWiz 1.4.0\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "app_name"
+msgstr "SnapWiz"
+
+msgid "app_tagline"
+msgstr "Der magische Paket-Installer"
+
+msgid "app_description"
+msgstr "Installieren Sie Pakete im Handumdrehen, wie ein Zauberer!"
+
+msgid "subtitle"
+msgstr "Die magische Art, .deb-, .rpm-, .snap- und .flatpak-Pakete zu installieren"
+
+msgid "drag_hint"
+msgstr "💡 Tipp: Ziehen Sie Paketdateien hierher, um sie hinzuzufügen!"
+
+msgid "tab_install"
+msgstr "📥 Paket installieren"
+
+msgid "tab_uninstall"
+msgstr "🗑️ Paket deinstallieren"
+
+msgid "tab_history"
+msgstr "📋 Installationsverlauf"
+
+msgid "tab_settings"
+msgstr "⚙️ Einstellungen"
+
+msgid "btn_browse"
+msgstr "📂 Paket hinzufügen..."
+
+msgid "btn_install"
+msgstr "✅ Stapelinstallation starten"
+
+msgid "btn_cancel"
+msgstr "⏹️ Installation abbrechen"
+
+msgid "btn_clear"
+msgstr "🔄 Auswahl löschen"
+
+msgid "btn_refresh"
+msgstr "🔄 Aktualisieren"
+
+msgid "btn_export"
+msgstr "📤 Exportieren"
+
+msgid "btn_import"
+msgstr "📥 Importieren"
+
+msgid "btn_clear_history"
+msgstr "🗑️ Verlauf löschen"
+
+msgid "btn_remove_queue"
+msgstr "❌ Aus Warteschlange entfernen"
+
+msgid "btn_uninstall"
+msgstr "🗑️ Ausgewählte deinstallieren"
+
+msgid "label_package_info"
+msgstr "📦 Paketinformationen"
+
+msgid "label_installation_progress"
+msgstr "⚙️ Installationsfortschritt"
+
+msgid "label_installation_log"
+msgstr "📋 Installationsprotokoll"
+
+msgid "label_installation_queue"
+msgstr "📋 Installationswarteschlange"
+
+msgid "label_search"
+msgstr "🔍 Pakete suchen"
+
+msgid "label_filter_status"
+msgstr "Nach Status filtern"
+
+msgid "label_filter_type"
+msgstr "Nach Typ filtern"
+
+msgid "label_theme"
+msgstr "Design"
+
+msgid "label_language"
+msgstr "Sprache"
+
+msgid "label_package_manager"
+msgstr "Paketmanager"
+
+msgid "label_app_version"
+msgstr "Anwendungsversion"
+
+msgid "label_security"
+msgstr "🔐 Sicherheitseinstellungen"
+
+msgid "status_ready"
+msgstr "Bereit"
+
+msgid "status_installing"
+msgstr "Installiere..."
+
+msgid "status_waiting"
+msgstr "Warte..."
+
+msgid "status_completed"
+msgstr "Abgeschlossen"
+
+msgid "status_failed"
+msgstr "Fehlgeschlagen"
+
+msgid "status_cancelled"
+msgstr "Abgebrochen"
+
+msgid "msg_no_package"
+msgstr "Bitte wählen Sie zuerst eine Paketdatei aus."
+
+msgid "msg_installation_complete"
+msgstr "Paket erfolgreich installiert!"
+
+msgid "msg_installation_failed"
+msgstr "Installation fehlgeschlagen. Überprüfen Sie das Protokoll für Details."
+
+msgid "msg_confirm_clear"
+msgstr "Sind Sie sicher, dass Sie die Auswahl löschen möchten?"
+
+msgid "msg_confirm_clear_history"
+msgstr "Sind Sie sicher, dass Sie den gesamten Installationsverlauf löschen möchten? Dies kann nicht rückgängig gemacht werden."
+
+msgid "msg_confirm_cancel"
+msgstr "Sind Sie sicher, dass Sie die Installation abbrechen möchten?"
+
+msgid "msg_no_packages_queue"
+msgstr "Keine Pakete in der Warteschlange. Fügen Sie Pakete über die Schaltfläche 'Durchsuchen' oder per Drag & Drop hinzu."
+
+msgid "msg_files_added"
+msgstr "{count} Paket(e) zur Warteschlange hinzugefügt!"
+
+msgid "msg_unsupported_files"
+msgstr "Die folgenden Dateien sind keine unterstützten Paketformate:"
+
+msgid "msg_queue_empty"
+msgstr "Warteschlange ist leer"
+
+msgid "msg_installing_package"
+msgstr "Installiere Paket {current} von {total}"
+
+msgid "tooltip_browse"
+msgstr "Nach Paketdateien suchen, um sie zur Installationswarteschlange hinzuzufügen"
+
+msgid "tooltip_install"
+msgstr "Alle Pakete in der Warteschlange installieren"
+
+msgid "tooltip_cancel"
+msgstr "Aktuelle Installation abbrechen"
+
+msgid "tooltip_clear"
+msgstr "Aktuelle Auswahl löschen"
+
+msgid "tooltip_refresh"
+msgstr "Liste aktualisieren"
+
+msgid "tooltip_remove_queue"
+msgstr "Ausgewähltes Paket aus der Warteschlange entfernen"
+
+msgid "tooltip_drag_drop"
+msgstr "Sie können Paketdateien hierher ziehen"
+
+msgid "settings_appearance"
+msgstr "Erscheinungsbild"
+
+msgid "settings_security"
+msgstr "Sicherheit"
+
+msgid "settings_language"
+msgstr "Sprache"
+
+msgid "settings_about"
+msgstr "Über"
+
+msgid "verify_integrity"
+msgstr "Paketintegrität überprüfen"
+
+msgid "verify_signature"
+msgstr "GPG-Signatur überprüfen"
+
+msgid "checksum_type"
+msgstr "Prüfsummentyp"
+
+msgid "theme_light"
+msgstr "Hell"
+
+msgid "theme_dark"
+msgstr "Dunkel"
+
+msgid "history_package"
+msgstr "Paket"
+
+msgid "history_status"
+msgstr "Status"
+
+msgid "history_date"
+msgstr "Datum"
+
+msgid "history_type"
+msgstr "Typ"
+
+msgid "history_export_json"
+msgstr "Als JSON exportieren"
+
+msgid "history_export_csv"
+msgstr "Als CSV exportieren"
+
+msgid "history_import"
+msgstr "Verlauf importieren"
+
+msgid "history_no_entries"
+msgstr "Kein Installationsverlauf verfügbar."
+
+msgid "shortcuts_display"
+msgstr "💡 Tastenkombinationen: Strg+O (Öffnen) | Strg+I (Installieren) | F5 (Aktualisieren) | Strg+Q (Beenden)"
+
+msgid "error_title"
+msgstr "Fehler"
+
+msgid "error_no_package_manager"
+msgstr "Kein geeigneter Paketmanager für diesen Dateityp gefunden."
+
+msgid "error_permission_denied"
+msgstr "Zugriff verweigert. Stellen Sie sicher, dass Sie über Administratorrechte verfügen."
+
+msgid "error_timeout"
+msgstr "Zeitüberschreitung bei der Installation. Das Paket könnte zu groß sein oder es könnten Netzwerkprobleme vorliegen."
+
+msgid "error_verification_failed"
+msgstr "Paketüberprüfung fehlgeschlagen. Das Paket könnte beschädigt oder manipuliert sein."
+
+msgid "notif_files_added"
+msgstr "Dateien hinzugefügt"
+
+msgid "notif_installation_complete"
+msgstr "Installation abgeschlossen"
+
+msgid "notif_installation_failed"
+msgstr "Installation fehlgeschlagen"
+
+msgid "notif_minimized"
+msgstr "Anwendung in Taskleiste minimiert. Doppelklicken Sie zum Wiederherstellen."
