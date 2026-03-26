@@ -163,6 +163,21 @@ All notable changes to the **SnapWiz** (formerly Linux Package Installer) projec
 
 ---
 
+## Release Notes - v1.4.0 (SnapWiz)
+
+**SnapWiz v1.4** is a transformative update that extends package format support and enhances user experience with drag-and-drop functionality and comprehensive multi-language support.
+
+**Key Highlights:**
+- **Format Support**: Now supports Snap and Flatpak packages alongside traditional .deb and .rpm.
+- **User Experience**: Drag-and-drop package files directly into the application for quick installation.
+- **Internationalization**: Full multi-language support for 6 languages (English, French, German, Spanish, Italian, Russian) with 360+ translations.
+- **Configuration**: Centralized configuration system for easy customization and maintenance.
+- **Smart Installation**: Format-agnostic installation handlers with automatic service/daemon status checking.
+
+**Recommended for**: All users. This update significantly expands package format support and improves accessibility for international users.
+
+---
+
 ## Release Notes - v1.3.0 (SnapWiz)
 
 **SnapWiz v1.3** is a major milestone that transforms the simple "Linux Package Installer" into a full-featured, secure package management suite.
@@ -179,6 +194,13 @@ All notable changes to the **SnapWiz** (formerly Linux Package Installer) projec
 
 ## Upgrade Guide
 
+### From 1.3.0 -> 1.4.0
+1. Pull the latest changes from the repository.
+2. Run `./install.sh` to update dependencies, including new language modules.
+3. Your existing history, settings, and language preferences will be preserved.
+4. New drag-and-drop functionality is available immediately after restart.
+5. Try installing Snap (.snap) or Flatpak (.flatpak) packages via the new format support.
+
 ### From 1.0.0 -> 1.3.0
 1. Pull the latest changes.
 2. Run `./install.sh` to update dependencies and shortcuts.
@@ -187,8 +209,8 @@ All notable changes to the **SnapWiz** (formerly Linux Package Installer) projec
 ---
 
 ## Links
-- **Documentation**: See `README.md`, `BATCH_INSTALLATION_GUIDE.md`, `UNINSTALL_GUIDE.md`, `VERIFICATION_GUIDE.md`
+- **Documentation**: See `README.md`, `BATCH_INSTALLATION_GUIDE.md`, `UNINSTALL_GUIDE.md`, `VERIFICATION_GUIDE.md`, `LANGUAGE_SUPPORT_GUIDE.md`
 - **License**: MIT License
 
-**Last Updated**: 2026-02-08
-**Current Version**: 1.3.0
+**Last Updated**: 2026-03-26
+**Current Version**: 1.4.0
