@@ -132,21 +132,21 @@ class TestThemeConfig(unittest.TestCase):
     def test_theme_exists(self):
         """Test theme configuration exists"""
         self.assertIsInstance(config.THEMES, dict)
-        self.assertIn('light', config.THEMES)
-        self.assertIn('dark', config.THEMES)
+        self.assertIn('Light', config.THEMES)
+        self.assertIn('Dark', config.THEMES)
     
     def test_light_theme(self):
         """Test light theme colors"""
-        light = config.THEMES['light']
+        light = config.THEMES['Light']
         self.assertIn('background', light)
-        self.assertIn('text', light)
+        self.assertIn('foreground', light)
         self.assertIsInstance(light['background'], str)
     
     def test_dark_theme(self):
         """Test dark theme colors"""
-        dark = config.THEMES['dark']
+        dark = config.THEMES['Dark']
         self.assertIn('background', dark)
-        self.assertIn('text', dark)
+        self.assertIn('foreground', dark)
         self.assertIsInstance(dark['background'], str)
 
 

@@ -15,6 +15,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 class TestEnvironment:
     """Setup and teardown test environment"""
+    __test__ = False
     
     def __init__(self):
         self.temp_dir = None

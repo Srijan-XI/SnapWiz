@@ -15,7 +15,7 @@ A magical GUI tool to help Linux users easily install `.deb`, `.rpm`, `.snap`, a
 - 📦 **Multi-Format Support** - Works with `.deb`, `.rpm`, `.snap`, and `.flatpak` packages
 - 🎯 **Drag-and-Drop Support** - Simply drag package files into the window to add them to the queue
 - ⚙️ **Centralized Configuration** - Easy customization through `config.py`
-- 📊 **Detailed Progress Tracking** - 7-step installation process with real-time updates
+- 📊 **Detailed Progress Tracking** - 9-step installation process with real-time updates
 - 🔍 **Package Information** - View detailed package metadata before installation
 - 📝 **Installation History** - Keep track of all installed packages with success/failure indicators
 - ❌ **Error Handling** - Clear error messages and troubleshooting guidance
@@ -93,11 +93,13 @@ chmod +x install.sh
 The `install.sh` script will:
 - ✅ Check for Python 3 and pip
 - ✅ Install all required dependencies
+- ✅ Create `app.sh` launcher script
 - ✅ Create a desktop entry for easy access
 - ✅ Create a launcher script in `~/.local/bin`
 - ✅ Set up the application automatically
 
 After running the script, you can launch the application by:
+- Running `./app.sh` from the project directory (simplest method!)
 - Searching for "SnapWiz" in your application menu
 - Running `snapwiz` in terminal (if `~/.local/bin` is in your PATH)
 - Running `python3 main.py` from the project directory
@@ -146,13 +148,24 @@ chmod +x main.py
 
 After installation, you can launch the application in several ways:
 
-#### Method 1: From Application Menu (Recommended for Beginners)
+#### Method 1: Using app.sh (Simplest) ⭐
+
+Navigate to the project directory and run:
+
+```bash
+cd ~/path/to/SnapWiz
+./app.sh
+```
+
+The `app.sh` script automatically activates the virtual environment and launches the application.
+
+#### Method 2: From Application Menu (GUI)
 
 1. Open your application menu/launcher
 2. Search for "SnapWiz"
 3. Click on the icon to launch
 
-#### Method 2: From Terminal (Quick Launch)
+#### Method 3: From Terminal (Quick Launch)
 
 If you used the automated installer and `~/.local/bin` is in your PATH:
 
@@ -160,7 +173,7 @@ If you used the automated installer and `~/.local/bin` is in your PATH:
 snapwiz
 ```
 
-#### Method 3: From Terminal (Direct Python)
+#### Method 4: From Terminal (Direct Python)
 
 Navigate to the project directory and run:
 
@@ -176,15 +189,6 @@ Or if you installed manually with a virtual environment:
 cd ~/path/to/SnapWiz
 source venv/bin/activate
 python main.py
-```
-
-#### Method 4: Direct Execution
-
-If you made main.py executable:
-
-```bash
-cd ~/path/to/SnapWiz
-./main.py
 ```
 
 ### Adding ~/.local/bin to PATH

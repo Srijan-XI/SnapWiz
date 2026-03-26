@@ -100,8 +100,8 @@ class TestInstallationErrors(unittest.TestCase):
     def test_installation_timeout(self):
         """Test InstallationTimeoutError"""
         exc = InstallationTimeoutError("package.deb", 300)
-        self.assertIn("300", str(exc.message))
-        self.assertIn("timeout", exc.message.lower())
+        self.assertIn("300", str(exc.details))
+        self.assertIn("timed out", exc.message.lower())
 
 
 class TestErrorHelpers(unittest.TestCase):
@@ -152,7 +152,7 @@ class TestNetworkErrors(unittest.TestCase):
         """Test NetworkTimeoutError"""
         exc = NetworkTimeoutError("file download", 30)
         self.assertIn("timeout", exc.message.lower())
-        self.assertIn("30", str(exc.message))
+        self.assertIn("30", str(exc.details))
 
 
 class TestSystemErrors(unittest.TestCase):

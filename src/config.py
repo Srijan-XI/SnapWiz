@@ -92,6 +92,7 @@ INSTALLATION_STEPS = [
     {"name": "Installing Package", "progress": 60, "icon": "⚙️"},
     {"name": "Configuring", "progress": 85, "icon": "🔧"},
     {"name": "Finalizing", "progress": 95, "icon": "✅"},
+    {"name": "Completed", "progress": 100, "icon": "✅"},
 ]
 
 # ==================== UI SETTINGS ====================
@@ -284,8 +285,8 @@ def get_package_format_by_extension(extension):
     """Get package format info by file extension"""
     for fmt_name, fmt_info in SUPPORTED_FORMATS.items():
         if fmt_info['extension'] == extension.lower():
-            return fmt_name, fmt_info
-    return None, None
+            return fmt_info
+    return None
 
 def is_supported_package(filename):
     """Check if filename has a supported package extension"""
@@ -294,3 +295,4 @@ def is_supported_package(filename):
 
 # Initialize configuration directory on import
 ensure_config_dir()
+CONFIG_DIR = USER_CONFIG_DIR
