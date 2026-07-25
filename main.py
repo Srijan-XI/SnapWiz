@@ -132,6 +132,7 @@ class MainWindow(QMainWindow):
         self.logger = InstallLogger()
         self.current_package = None
         self.current_theme = "Light"  # Default theme
+        self.drag_hint = None
         self.load_settings()
         self.init_ui()
         self.setup_shortcuts()
@@ -141,8 +142,8 @@ class MainWindow(QMainWindow):
     def init_ui(self):
         """Initialize the user interface with modern design"""
         self.setWindowTitle(config.WINDOW_TITLE)
-        self.setGeometry(100, 100, config.WINDOW_WIDTH, config.WINDOW_HEIGHT)
         self.setMinimumSize(config.WINDOW_MIN_WIDTH, config.WINDOW_MIN_HEIGHT)
+        self._apply_window_sizing()
         
         # Enable drag and drop
         self.setAcceptDrops(config.DRAG_DROP_ENABLED)
@@ -216,47 +217,14 @@ class MainWindow(QMainWindow):
         content_layout.setContentsMargins(20, 20, 20, 20)
         
         # Drag and drop hint with modern styling
-        drag_hint = QLabel("💡 Pro Tip: Drag & drop package files anywhere to add them instantly!")
-        drag_hint.setAlignment(Qt.AlignCenter)
-        drag_hint.setStyleSheet("""
-            color: #667eea;
-            background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-                stop:0 rgba(102, 126, 234, 0.1), stop:0.5 rgba(118, 75, 162, 0.1), stop:1 rgba(240, 147, 251, 0.1));
-            font-style: italic;
-            font-size: 11px;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid rgba(102, 126, 234, 0.3);
-        """)
-        content_layout.addWidget(drag_hint)
+        self.drag_hint = QLabel("💡 Pro Tip: Drag & drop package files anywhere to add them instantly!")
+        self.drag_hint.setAlignment(Qt.AlignCenter)
+        content_layout.addWidget(self.drag_hint)
         
         # Create modern tab widget
         self.tabs = QTabWidget()
         self.tabs.setDocumentMode(True)
-        self.tabs.setStyleSheet("""
-            QTabWidget::pane {
-                border: none;
-                background: transparent;
-            }
-            QTabBar::tab {
-                background: transparent;
-                color: #666;
-                padding: 12px 24px;
-                margin-right: 4px;
-                border: none;
-                border-bottom: 3px solid transparent;
-                font-size: 13px;
-                font-weight: 600;
-            }
-            QTabBar::tab:selected {
-                color: #667eea;
-                border-bottom: 3px solid #667eea;
-            }
-            QTabBar::tab:hover {
-                color: #764ba2;
-                background: rgba(102, 126, 234, 0.05);
-            }
-        """)
+        self._apply_tab_style()
         
         self.tabs.addTab(self.create_install_tab(), "📥 Install")
         self.tabs.addTab(self.create_uninstall_tab(), "🗑️ Uninstall")
@@ -267,15 +235,130 @@ class MainWindow(QMainWindow):
         main_layout.addWidget(content_widget)
         
         # Modern status bar
-        self.statusBar().setStyleSheet("""
-            QStatusBar {
-                background: rgba(102, 126, 234, 0.05);
-                color: #666;
-                font-size: 11px;
-                padding: 5px;
-            }
-        """)
+        self._apply_statusbar_style()
         self.statusBar().showMessage("⌨️ " + config.SHORTCUTS_DISPLAY)
+        self._apply_drag_hint_style()
+
+    def _apply_window_sizing(self):
+        """Apply adaptive initial sizing based on available screen space."""
+        width = config.WINDOW_WIDTH
+        height = config.WINDOW_HEIGHT
+
+        screen = QApplication.primaryScreen()
+        if screen:
+            available = screen.availableGeometry()
+            max_width = max(config.WINDOW_MIN_WIDTH, available.width() - 80)
+            max_height = max(config.WINDOW_MIN_HEIGHT, available.height() - 80)
+
+            target_width = max(config.WINDOW_MIN_WIDTH, int(available.width() * 0.8))
+            target_height = max(config.WINDOW_MIN_HEIGHT, int(available.height() * 0.85))
+
+            width = min(max(width, target_width), max_width)
+            height = min(max(height, target_height), max_height)
+
+        self.resize(width, height)
+
+    def _apply_tab_style(self):
+        """Apply theme-aware tab styling."""
+        if self.current_theme == "Dark":
+            self.tabs.setStyleSheet("""
+                QTabWidget::pane {
+                    border: none;
+                    background: transparent;
+                }
+                QTabBar::tab {
+                    background: transparent;
+                    color: #b5bfd3;
+                    padding: 12px 24px;
+                    margin-right: 4px;
+                    border: none;
+                    border-bottom: 3px solid transparent;
+                    font-size: 13px;
+                    font-weight: 600;
+                }
+                QTabBar::tab:selected {
+                    color: #8fa8ff;
+                    border-bottom: 3px solid #8fa8ff;
+                }
+                QTabBar::tab:hover {
+                    color: #d9e1ff;
+                    background: rgba(143, 168, 255, 0.12);
+                }
+            """)
+        else:
+            self.tabs.setStyleSheet("""
+                QTabWidget::pane {
+                    border: none;
+                    background: transparent;
+                }
+                QTabBar::tab {
+                    background: transparent;
+                    color: #666;
+                    padding: 12px 24px;
+                    margin-right: 4px;
+                    border: none;
+                    border-bottom: 3px solid transparent;
+                    font-size: 13px;
+                    font-weight: 600;
+                }
+                QTabBar::tab:selected {
+                    color: #667eea;
+                    border-bottom: 3px solid #667eea;
+                }
+                QTabBar::tab:hover {
+                    color: #764ba2;
+                    background: rgba(102, 126, 234, 0.05);
+                }
+            """)
+
+    def _apply_statusbar_style(self):
+        """Apply theme-aware status bar styling."""
+        if self.current_theme == "Dark":
+            self.statusBar().setStyleSheet("""
+                QStatusBar {
+                    background: rgba(22, 33, 62, 0.95);
+                    color: #b5bfd3;
+                    font-size: 11px;
+                    padding: 5px;
+                }
+            """)
+        else:
+            self.statusBar().setStyleSheet("""
+                QStatusBar {
+                    background: rgba(102, 126, 234, 0.05);
+                    color: #666;
+                    font-size: 11px;
+                    padding: 5px;
+                }
+            """)
+
+    def _apply_drag_hint_style(self):
+        """Apply theme-aware styling for the drag-and-drop hint banner."""
+        if not self.drag_hint:
+            return
+
+        if self.current_theme == "Dark":
+            self.drag_hint.setStyleSheet("""
+                color: #b9c8ff;
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                    stop:0 rgba(102, 126, 234, 0.2), stop:0.5 rgba(118, 75, 162, 0.2), stop:1 rgba(240, 147, 251, 0.15));
+                font-style: italic;
+                font-size: 11px;
+                padding: 10px;
+                border-radius: 8px;
+                border: 1px solid rgba(143, 168, 255, 0.5);
+            """)
+        else:
+            self.drag_hint.setStyleSheet("""
+                color: #667eea;
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                    stop:0 rgba(102, 126, 234, 0.1), stop:0.5 rgba(118, 75, 162, 0.1), stop:1 rgba(240, 147, 251, 0.1));
+                font-style: italic;
+                font-size: 11px;
+                padding: 10px;
+                border-radius: 8px;
+                border: 1px solid rgba(102, 126, 234, 0.3);
+            """)
         
     def setup_shortcuts(self):
         """Setup keyboard shortcuts"""
@@ -583,7 +666,7 @@ class MainWindow(QMainWindow):
         
         self.queue_list = QListWidget()
         self.queue_list.setMinimumHeight(120)
-        self.queue_list.setMaximumHeight(180)
+        self.queue_list.setMaximumHeight(260)
         self.queue_list.setToolTip("Right-click to remove individual packages")
         self.queue_list.setContextMenuPolicy(Qt.CustomContextMenu)
         self.queue_list.customContextMenuRequested.connect(self.show_queue_context_menu)
@@ -762,7 +845,7 @@ class MainWindow(QMainWindow):
         self.log_output = QTextEdit()
         self.log_output.setReadOnly(True)
         self.log_output.setMinimumHeight(150)
-        self.log_output.setMaximumHeight(220)
+        self.log_output.setMaximumHeight(320)
         self.log_output.setToolTip("Installation commands and output")
         self.log_output.setStyleSheet("""
             QTextEdit {
@@ -2199,9 +2282,7 @@ class MainWindow(QMainWindow):
     def clear_selection(self):
         """Clear current package selection"""
         self.current_package = None
-        self.path_label.setText("No package selected")
-        self.info_text.setText("Select a package to see details...")
-        self.install_btn.setEnabled(False)
+        self.install_btn.setEnabled(len(self.install_queue) > 0)
         self.progress_bar.setValue(0)
         self.status_label.setText("Ready to install")
         self.steps_label.setText("Ready to install")
@@ -2502,9 +2583,6 @@ class MainWindow(QMainWindow):
                 }
                 QCheckBox { color: #ecf0f1; background: transparent; }
                 QTabWidget::pane { background: transparent; }
-                QTabBar::tab { color: #95a5a6; background: transparent; }
-                QTabBar::tab:selected { color: #667eea; }
-                QStatusBar { background-color: #16213e; color: #95a5a6; }
                 QScrollBar:vertical {
                     background: #16213e;
                     width: 8px;
@@ -2535,6 +2613,11 @@ class MainWindow(QMainWindow):
                     border-radius: 4px;
                 }
             """)
+
+        # Re-apply component-level theme styles that are defined dynamically.
+        self._apply_tab_style()
+        self._apply_statusbar_style()
+        self._apply_drag_hint_style()
     
     def load_settings(self):
         """Load application settings"""
