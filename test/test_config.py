@@ -29,7 +29,21 @@ class TestConfigConstants(unittest.TestCase):
         self.assertIsInstance(config.WINDOW_HEIGHT, int)
         self.assertGreater(config.WINDOW_WIDTH, 0)
         self.assertGreater(config.WINDOW_HEIGHT, 0)
-    
+
+    def test_get_window_size_for_screen_clamps_to_small_screen(self):
+        """Ensure the preferred window fits within a small display."""
+        width, height = config.get_window_size_for_screen(640, 480)
+        self.assertLessEqual(width, 640 - config.WINDOW_MARGIN_X)
+        self.assertLessEqual(height, 480 - config.WINDOW_MARGIN_Y)
+        self.assertGreater(width, 0)
+        self.assertGreater(height, 0)
+
+    def test_get_window_size_for_screen_preserves_large_screen_defaults(self):
+        """Large screens should still use a comfortable, non-minimal layout."""
+        width, height = config.get_window_size_for_screen(1600, 1000)
+        self.assertGreaterEqual(width, config.WINDOW_MIN_WIDTH)
+        self.assertGreaterEqual(height, config.WINDOW_MIN_HEIGHT)
+
     def test_installation_settings(self):
         """Test installation timeouts"""
         self.assertIsInstance(config.INSTALLATION_TIMEOUT, int)

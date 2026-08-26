@@ -240,21 +240,19 @@ class MainWindow(QMainWindow):
         self._apply_drag_hint_style()
 
     def _apply_window_sizing(self):
-        """Apply adaptive initial sizing based on available screen space."""
+        """Apply adaptive initial sizing based on the available screen area."""
         width = config.WINDOW_WIDTH
         height = config.WINDOW_HEIGHT
 
         screen = QApplication.primaryScreen()
         if screen:
             available = screen.availableGeometry()
-            max_width = max(config.WINDOW_MIN_WIDTH, available.width() - 80)
-            max_height = max(config.WINDOW_MIN_HEIGHT, available.height() - 80)
-
-            target_width = max(config.WINDOW_MIN_WIDTH, int(available.width() * 0.8))
-            target_height = max(config.WINDOW_MIN_HEIGHT, int(available.height() * 0.85))
-
-            width = min(max(width, target_width), max_width)
-            height = min(max(height, target_height), max_height)
+            width, height = config.get_window_size_for_screen(
+                available.width(),
+                available.height(),
+                config.WINDOW_WIDTH,
+                config.WINDOW_HEIGHT,
+            )
 
         self.resize(width, height)
 

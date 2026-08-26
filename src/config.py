@@ -21,6 +21,27 @@ WINDOW_WIDTH = 950
 WINDOW_HEIGHT = 700
 WINDOW_MIN_WIDTH = 800
 WINDOW_MIN_HEIGHT = 600
+WINDOW_MARGIN_X = 60
+WINDOW_MARGIN_Y = 80
+
+
+def get_window_size_for_screen(available_width, available_height, requested_width=WINDOW_WIDTH, requested_height=WINDOW_HEIGHT):
+    """Return a window size that fits within the usable screen area."""
+    if available_width <= 0 or available_height <= 0:
+        return int(requested_width), int(requested_height)
+
+    usable_width = max(320, available_width - WINDOW_MARGIN_X)
+    usable_height = max(320, available_height - WINDOW_MARGIN_Y)
+
+    preferred_width = min(max(requested_width, int(usable_width * 0.8)), usable_width)
+    preferred_height = min(max(requested_height, int(usable_height * 0.85)), usable_height)
+
+    if available_width < WINDOW_MIN_WIDTH:
+        preferred_width = max(320, usable_width)
+    if available_height < WINDOW_MIN_HEIGHT:
+        preferred_height = max(320, usable_height)
+
+    return int(preferred_width), int(preferred_height)
 
 # ==================== SUPPORTED PACKAGE FORMATS ====================
 SUPPORTED_FORMATS = {
