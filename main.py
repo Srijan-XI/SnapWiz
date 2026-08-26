@@ -949,7 +949,7 @@ class MainWindow(QMainWindow):
         return scroll
     
     def create_uninstall_tab(self):
-        """Create the uninstall tab for removing installed packages"""
+        """Create the uninstall tab for removing installed packages."""
         from PyQt5.QtWidgets import QScrollArea
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
@@ -957,54 +957,94 @@ class MainWindow(QMainWindow):
         scroll.setStyleSheet("QScrollArea { border: none; background: transparent; }")
         tab = QWidget()
         layout = QVBoxLayout(tab)
-        layout.setSpacing(15)
+        layout.setSpacing(18)
         layout.setContentsMargins(15, 15, 15, 15)
-        
-        # Info label
+
+        # Give the tab header a little more visual weight so the action reads clearly.
         info = QLabel("🗑️ Uninstall Installed Packages")
-        info.setFont(QFont("Arial", 10))
+        info.setFont(QFont("Segoe UI", 11, QFont.Bold))
+        info.setStyleSheet("color: #2c3e50;")
         info.setToolTip("Remove packages that are currently installed on your system")
         layout.addWidget(info)
-        
-        # Search and Filter Section
+
+        # Use a card-like filter area instead of the plain default QGroupBox to improve legibility
+        # and keep the controls comfortable on smaller screens.
         search_filter_group = QGroupBox("🔍 Search & Filter")
+        search_filter_group.setStyleSheet("""
+            QGroupBox {
+                background: white;
+                border: none;
+                border-radius: 12px;
+                padding: 16px;
+                margin-top: 8px;
+            }
+            QGroupBox:title {
+                color: #2c3e50;
+                font-weight: 600;
+            }
+        """)
         search_filter_layout = QVBoxLayout()
-        
-        # Search bar
+        search_filter_layout.setSpacing(12)
+        search_filter_layout.setContentsMargins(10, 18, 10, 10)
+
+        # Keep the search field tall enough to be readable and consistent across the app.
         search_layout = QHBoxLayout()
+        search_layout.setSpacing(10)
         search_label = QLabel("Search:")
+        search_label.setFixedWidth(55)
         search_layout.addWidget(search_label)
-        
+
         self.uninstall_search_input = QLineEdit()
+        self.uninstall_search_input.setFixedHeight(36)
         self.uninstall_search_input.setPlaceholderText("Type package name to search...")
+        self.uninstall_search_input.setStyleSheet("""
+            QLineEdit {
+                border: 1px solid #d0d7de;
+                border-radius: 8px;
+                padding: 6px 10px;
+                background: #fafbfc;
+            }
+        """)
         self.uninstall_search_input.textChanged.connect(self.filter_installed_packages)
         self.uninstall_search_input.setToolTip("Search installed packages by name")
         search_layout.addWidget(self.uninstall_search_input)
-        
+
         search_filter_layout.addLayout(search_layout)
-        
-        # Filter by type
+
+        # The filter row should avoid crowding the controls together on narrow displays.
         filter_layout = QHBoxLayout()
-        
+        filter_layout.setSpacing(12)
+
         type_label = QLabel("Type:")
+        type_label.setFixedWidth(40)
         filter_layout.addWidget(type_label)
-        
+
         self.uninstall_type_filter = QComboBox()
+        self.uninstall_type_filter.setFixedHeight(36)
         self.uninstall_type_filter.addItems(["All", ".deb packages", ".rpm packages"])
         self.uninstall_type_filter.currentIndexChanged.connect(self.filter_installed_packages)
         self.uninstall_type_filter.setToolTip("Filter by package type")
+        self.uninstall_type_filter.setStyleSheet("""
+            QComboBox {
+                min-width: 140px;
+                border: 1px solid #d0d7de;
+                border-radius: 8px;
+                padding: 6px 10px;
+                background: #fafbfc;
+            }
+        """)
         filter_layout.addWidget(self.uninstall_type_filter)
-        
-        # Refresh button
+
         refresh_packages_btn = QPushButton("🔄 Refresh List")
+        refresh_packages_btn.setFixedHeight(36)
         refresh_packages_btn.clicked.connect(self.load_installed_packages)
         refresh_packages_btn.setToolTip("Reload the list of installed packages")
         refresh_packages_btn.setStyleSheet("""
             QPushButton {
                 background-color: #3498db;
                 color: white;
-                padding: 5px 10px;
-                border-radius: 3px;
+                padding: 5px 12px;
+                border-radius: 8px;
                 font-weight: bold;
             }
             QPushButton:hover {
@@ -1012,34 +1052,51 @@ class MainWindow(QMainWindow):
             }
         """)
         filter_layout.addWidget(refresh_packages_btn)
-        
+
         filter_layout.addStretch()
         search_filter_layout.addLayout(filter_layout)
-        
+
         search_filter_group.setLayout(search_filter_layout)
         layout.addWidget(search_filter_group)
-        
-        # Package count label
+
         self.uninstall_count_label = QLabel("Loading packages...")
         self.uninstall_count_label.setStyleSheet("color: #7f8c8d; font-style: italic;")
         layout.addWidget(self.uninstall_count_label)
-        
-        # Installed packages list
+
+        # The package list uses a strong border and visible row separation so it stays legible
+        # without feeling too dense when many entries are present.
         packages_group = QGroupBox("📦 Installed Packages")
+        packages_group.setStyleSheet("""
+            QGroupBox {
+                background: white;
+                border: none;
+                border-radius: 12px;
+                padding: 16px;
+                margin-top: 8px;
+            }
+            QGroupBox:title {
+                color: #2c3e50;
+                font-weight: 600;
+            }
+        """)
         packages_layout = QVBoxLayout()
-        
+        packages_layout.setContentsMargins(10, 18, 10, 10)
+
         self.installed_packages_list = QListWidget()
         self.installed_packages_list.setSelectionMode(QListWidget.ExtendedSelection)
         self.installed_packages_list.setToolTip("Select one or more packages to uninstall")
         self.installed_packages_list.setStyleSheet("""
             QListWidget {
-                border: 2px solid #bdc3c7;
-                border-radius: 5px;
-                padding: 5px;
+                border: 1px solid #d0d7de;
+                border-radius: 8px;
+                padding: 6px;
+                background: #fafbfc;
             }
             QListWidget::item {
-                padding: 8px;
+                padding: 10px 12px;
                 border-bottom: 1px solid #ecf0f1;
+                border-radius: 6px;
+                margin: 2px 0;
             }
             QListWidget::item:selected {
                 background-color: #e74c3c;
@@ -1047,16 +1104,16 @@ class MainWindow(QMainWindow):
             }
         """)
         packages_layout.addWidget(self.installed_packages_list)
-        
+
         packages_group.setLayout(packages_layout)
         layout.addWidget(packages_group)
-        
-        # Action buttons
+
         button_layout = QHBoxLayout()
-        
+        button_layout.setSpacing(12)
+
         self.uninstall_btn = QPushButton("🗑️ Uninstall Selected")
-        self.uninstall_btn.setFixedHeight(45)
-        self.uninstall_btn.setFixedWidth(220)
+        self.uninstall_btn.setFixedHeight(46)
+        self.uninstall_btn.setMinimumWidth(210)
         self.uninstall_btn.setEnabled(False)
         self.uninstall_btn.setToolTip("Uninstall the selected package(s)")
         self.uninstall_btn.clicked.connect(self.uninstall_packages)
@@ -1065,7 +1122,7 @@ class MainWindow(QMainWindow):
                 background-color: #e74c3c;
                 color: white;
                 padding: 10px 20px;
-                border-radius: 5px;
+                border-radius: 8px;
                 font-size: 14px;
                 font-weight: bold;
             }
@@ -1080,20 +1137,18 @@ class MainWindow(QMainWindow):
             }
         """)
         button_layout.addWidget(self.uninstall_btn)
-        
+
         button_layout.addStretch()
         layout.addLayout(button_layout)
-        
-        # Enable uninstall button when selection changes
+
         self.installed_packages_list.itemSelectionChanged.connect(
             lambda: self.uninstall_btn.setEnabled(
                 len(self.installed_packages_list.selectedItems()) > 0
             )
         )
-        
-        # Load installed packages on tab creation
+
         self.all_installed_packages = []
-        QTimer.singleShot(100, self.load_installed_packages)  # Load after UI is ready
+        QTimer.singleShot(100, self.load_installed_packages)
 
         layout.addStretch()
         scroll.setWidget(tab)
@@ -1101,7 +1156,7 @@ class MainWindow(QMainWindow):
     
     
     def create_history_tab(self):
-        """Create the installation history tab with search and filter"""
+        """Create the installation history tab with search and filter."""
         from PyQt5.QtWidgets import QScrollArea
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
@@ -1109,65 +1164,115 @@ class MainWindow(QMainWindow):
         scroll.setStyleSheet("QScrollArea { border: none; background: transparent; }")
         tab = QWidget()
         layout = QVBoxLayout(tab)
+        layout.setSpacing(18)
         layout.setContentsMargins(15, 15, 15, 15)
-        
-        # Info label
+
+        # Keep the header readable without turning the tab into a huge block of text.
         info = QLabel("📋 Installation History - Search and filter your installations")
-        info.setFont(QFont("Arial", 10))
+        info.setFont(QFont("Segoe UI", 11, QFont.Bold))
+        info.setStyleSheet("color: #2c3e50;")
         info.setToolTip("Complete history of all package installations with search and filter")
         layout.addWidget(info)
-        
-        # Search and Filter Section
+
+        # These controls use a compact card layout so the filter section feels consistent with the
+        # install/uninstall tabs while leaving enough room for smaller screens.
         search_filter_group = QGroupBox("🔍 Search & Filter")
+        search_filter_group.setStyleSheet("""
+            QGroupBox {
+                background: white;
+                border: none;
+                border-radius: 12px;
+                padding: 16px;
+                margin-top: 8px;
+            }
+            QGroupBox:title {
+                color: #2c3e50;
+                font-weight: 600;
+            }
+        """)
         search_filter_layout = QVBoxLayout()
-        
-        # Search bar
+        search_filter_layout.setSpacing(12)
+        search_filter_layout.setContentsMargins(10, 18, 10, 10)
+
+        # Search fields and combo boxes need a consistent height otherwise they look cramped and
+        # uneven when the app is restored to a narrow window size.
         search_layout = QHBoxLayout()
+        search_layout.setSpacing(10)
         search_label = QLabel("Search:")
+        search_label.setFixedWidth(60)
         search_label.setToolTip("Search by package name")
         search_layout.addWidget(search_label)
-        
+
         self.search_input = QLineEdit()
+        self.search_input.setFixedHeight(36)
         self.search_input.setPlaceholderText("Type to search packages...")
+        self.search_input.setStyleSheet("""
+            QLineEdit {
+                border: 1px solid #d0d7de;
+                border-radius: 8px;
+                padding: 6px 10px;
+                background: #fafbfc;
+            }
+        """)
         self.search_input.textChanged.connect(self.apply_filters)
         self.search_input.setToolTip("Search by package name (real-time)")
         search_layout.addWidget(self.search_input)
-        
+
         search_filter_layout.addLayout(search_layout)
-        
-        # Filter controls
+
         filter_layout = QHBoxLayout()
-        
-        # Status filter
+        filter_layout.setSpacing(12)
+
         status_label = QLabel("Status:")
+        status_label.setFixedWidth(55)
         filter_layout.addWidget(status_label)
-        
+
         self.status_filter = QComboBox()
+        self.status_filter.setFixedHeight(36)
         self.status_filter.addItems(["All", "✅ Success", "❌ Failed"])
         self.status_filter.currentIndexChanged.connect(self.apply_filters)
         self.status_filter.setToolTip("Filter by installation status")
+        self.status_filter.setStyleSheet("""
+            QComboBox {
+                min-width: 140px;
+                border: 1px solid #d0d7de;
+                border-radius: 8px;
+                padding: 6px 10px;
+                background: #fafbfc;
+            }
+        """)
         filter_layout.addWidget(self.status_filter)
-        
-        # Package type filter
+
         type_label = QLabel("Type:")
+        type_label.setFixedWidth(40)
         filter_layout.addWidget(type_label)
-        
+
         self.type_filter = QComboBox()
+        self.type_filter.setFixedHeight(36)
         self.type_filter.addItems(["All", ".deb", ".rpm"])
         self.type_filter.currentIndexChanged.connect(self.apply_filters)
         self.type_filter.setToolTip("Filter by package type")
+        self.type_filter.setStyleSheet("""
+            QComboBox {
+                min-width: 120px;
+                border: 1px solid #d0d7de;
+                border-radius: 8px;
+                padding: 6px 10px;
+                background: #fafbfc;
+            }
+        """)
         filter_layout.addWidget(self.type_filter)
-        
-        # Clear filters button
+
         clear_filters_btn = QPushButton("🔄 Clear Filters")
+        clear_filters_btn.setFixedHeight(36)
         clear_filters_btn.clicked.connect(self.clear_filters)
         clear_filters_btn.setToolTip("Reset all filters and show all history")
         clear_filters_btn.setStyleSheet("""
             QPushButton {
                 background-color: #95a5a6;
                 color: white;
-                padding: 5px 10px;
-                border-radius: 3px;
+                padding: 5px 12px;
+                border-radius: 8px;
                 font-weight: bold;
             }
             QPushButton:hover {
@@ -1175,30 +1280,33 @@ class MainWindow(QMainWindow):
             }
         """)
         filter_layout.addWidget(clear_filters_btn)
-        
+
         filter_layout.addStretch()
         search_filter_layout.addLayout(filter_layout)
-        
+
         search_filter_group.setLayout(search_filter_layout)
         layout.addWidget(search_filter_group)
-        
-        # Results count label
+
         self.results_label = QLabel("Showing all results")
         self.results_label.setStyleSheet("color: #7f8c8d; font-style: italic;")
         layout.addWidget(self.results_label)
-        
-        # History list with custom items
+
+        # The history list should be easy to scan even when many entries are present, so we add a
+        # stronger border and more spacing than the default list widget styling.
         self.history_list = QListWidget()
         self.history_list.setToolTip("Double-click an item for details (F5 to refresh)")
         self.history_list.setStyleSheet("""
             QListWidget {
-                border: 2px solid #bdc3c7;
-                border-radius: 5px;
-                padding: 5px;
+                border: 1px solid #d0d7de;
+                border-radius: 8px;
+                padding: 6px;
+                background: #fafbfc;
             }
             QListWidget::item {
-                padding: 8px;
+                padding: 10px 12px;
                 border-bottom: 1px solid #ecf0f1;
+                border-radius: 6px;
+                margin: 2px 0;
             }
             QListWidget::item:selected {
                 background-color: #3498db;
@@ -1207,19 +1315,20 @@ class MainWindow(QMainWindow):
         """)
         self.load_history()
         layout.addWidget(self.history_list)
-        
-        # Buttons
+
         button_layout = QHBoxLayout()
-        
+        button_layout.setSpacing(10)
+
         refresh_btn = QPushButton("🔄 Refresh")
+        refresh_btn.setFixedHeight(36)
         refresh_btn.setToolTip("Refresh the installation history (F5)")
         refresh_btn.clicked.connect(self.load_history)
         refresh_btn.setStyleSheet("""
             QPushButton {
                 background-color: #3498db;
                 color: white;
-                padding: 8px 15px;
-                border-radius: 5px;
+                padding: 5px 12px;
+                border-radius: 8px;
                 font-weight: bold;
             }
             QPushButton:hover {
@@ -1227,16 +1336,17 @@ class MainWindow(QMainWindow):
             }
         """)
         button_layout.addWidget(refresh_btn)
-        
+
         clear_history_btn = QPushButton("🗑️ Clear History")
+        clear_history_btn.setFixedHeight(36)
         clear_history_btn.setToolTip("Permanently delete all history entries")
         clear_history_btn.clicked.connect(self.clear_history)
         clear_history_btn.setStyleSheet("""
             QPushButton {
                 background-color: #e74c3c;
                 color: white;
-                padding: 8px 15px;
-                border-radius: 5px;
+                padding: 5px 12px;
+                border-radius: 8px;
                 font-weight: bold;
             }
             QPushButton:hover {
@@ -1244,20 +1354,19 @@ class MainWindow(QMainWindow):
             }
         """)
         button_layout.addWidget(clear_history_btn)
-        
-        # Add separator
+
         button_layout.addSpacing(20)
-        
-        # Export CSV button
+
         export_csv_btn = QPushButton("📊 Export CSV")
+        export_csv_btn.setFixedHeight(36)
         export_csv_btn.setToolTip("Export history to CSV file for spreadsheet analysis")
         export_csv_btn.clicked.connect(self.export_csv)
         export_csv_btn.setStyleSheet("""
             QPushButton {
                 background-color: #27ae60;
                 color: white;
-                padding: 8px 15px;
-                border-radius: 5px;
+                padding: 5px 12px;
+                border-radius: 8px;
                 font-weight: bold;
             }
             QPushButton:hover {
@@ -1265,17 +1374,17 @@ class MainWindow(QMainWindow):
             }
         """)
         button_layout.addWidget(export_csv_btn)
-        
-        # Export JSON button
+
         export_json_btn = QPushButton("📦 Export JSON")
+        export_json_btn.setFixedHeight(36)
         export_json_btn.setToolTip("Export history to JSON file with full metadata")
         export_json_btn.clicked.connect(self.export_json)
         export_json_btn.setStyleSheet("""
             QPushButton {
                 background-color: #16a085;
                 color: white;
-                padding: 8px 15px;
-                border-radius: 5px;
+                padding: 5px 12px;
+                border-radius: 8px;
                 font-weight: bold;
             }
             QPushButton:hover {
@@ -1283,17 +1392,17 @@ class MainWindow(QMainWindow):
             }
         """)
         button_layout.addWidget(export_json_btn)
-        
-        # Import button
+
         import_btn = QPushButton("📥 Import")
+        import_btn.setFixedHeight(36)
         import_btn.setToolTip("Import history from JSON backup file")
         import_btn.clicked.connect(self.import_history)
         import_btn.setStyleSheet("""
             QPushButton {
                 background-color: #9b59b6;
                 color: white;
-                padding: 8px 15px;
-                border-radius: 5px;
+                padding: 5px 12px;
+                border-radius: 8px;
                 font-weight: bold;
             }
             QPushButton:hover {
@@ -1301,7 +1410,7 @@ class MainWindow(QMainWindow):
             }
         """)
         button_layout.addWidget(import_btn)
-        
+
         button_layout.addStretch()
         layout.addLayout(button_layout)
 
