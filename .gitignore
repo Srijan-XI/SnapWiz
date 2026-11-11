@@ -3,6 +3,8 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+node_modules/
+
 # C extensions
 *.so
 
@@ -124,6 +126,7 @@ dmypy.json
 
 # IDE
 .vscode/
+.vs/
 .idea/
 *.swp
 *.swo
@@ -138,3 +141,12 @@ Thumbs.db
 *.rpm
 installation_history.json
 .linux-package-installer/
+
+# Tauri / Rust build output
+src-tauri/target/
+src-tauri/gen/
+
+# Local Docker overrides and environment files
+docker-compose.override.yml
+.env.*
+!.env.example
