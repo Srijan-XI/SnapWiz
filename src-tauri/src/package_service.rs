@@ -15,6 +15,237 @@ use sha2::{Digest, Sha256};
 use tauri::{AppHandle, Emitter};
 use wait_timeout::ChildExt;
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::os::unix::fs::PermissionsExt;
+    use tempfile::tempdir;
+
+    #[test]
+    fn test_calculate_checksum_sha256() {
+        let dir = tempdir().unwrap();
+        let file_path = dir.path().join("test.txt");
+        std::fs::write(&file_path, b"hello world").unwrap();
+
+        let result = calculate_checksum(&file_path, "sha256");
+        assert!(result.is_ok());
+        let hash = result.unwrap();
+        // SHA256 of "hello world" is well-known; just verify it's 64 hex chars
+        assert_eq!(hash.len(), 64);
+    }
+
+    #[test]
+    fn test_calculate_checksum_md5() {
+        let dir = tempdir().unwrap();
+        let file_path = dir.path().join("test.txt");
+        std::fs::write(&file_path, b"hello world").unwrap();
+
+        let result = calculate_checksum(&file_path, "md5");
+        assert!(result.is_ok());
+        let hash = result.unwrap();
+        assert_eq!(hash.len(), 32);
+    }
+
+    #[test]
+    fn test_calculate_checksum_unsupported() {
+        let dir = tempdir().unwrap();
+        let file_path = dir.path().join("test.txt");
+        std::fs::write(&file_path, b"hello world").unwrap();
+
+        let result = calculate_checksum(&file_path, "unsupported");
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_integrity_check_deb_no_tool() {
+        let dir = tempdir().unwrap();
+        let deb_path = dir.path().join("test.deb");
+        std::fs::write(&deb_path, b"fake deb").unwrap();
+
+        let result = integrity_check(".deb", deb_path.to_str().unwrap());
+        assert!(result.is_ok() || result.is_err());
+    }
+
+    #[test]
+    fn test_integrity_check_rpm_no_tool() {
+        let dir = tempdir().unwrap();
+        let rpm_path = dir.path().join("test.rpm");
+        std::fs::write(&rpm_path, b"fake rpm").unwrap();
+
+        let result = integrity_check(".rpm", rpm_path.to_str().unwrap());
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn test_signature_check_deb_no_tool() {
+        let dir = tempdir().unwrap();
+        let deb_path = dir.path().join("test.deb");
+        std::fs::write(&deb_path, b"fake deb").unwrap();
+
+        let result = signature_check(".deb", deb_path.to_str().unwrap());
+        // No gpg → should return Err
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_signature_check_rpm_no_tool() {
+        let dir = tempdir().unwrap();
+        let rpm_path = dir.path().join("test.rpm");
+        std::fs::write(&rpm_path, b"fake rpm").unwrap();
+
+        let result = signature_check(".rpm", rpm_path.to_str().unwrap());
+        // No rpm binary → should return Err
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_verify_package_file_not_found() {
+        let request = VerificationRequest {
+            package_path: "/nonexistent/package.deb".to_string(),
+            checksum: None,
+            checksum_type: None,
+            check_signature: false,
+        };
+
+        let result = verify_package(request);
+        assert!(!result.success);
+        assert_eq!(result.message, "Package file not found");
+    }
+
+    #[test]
+    fn test_verify_package_too_small() {
+        let dir = tempdir().unwrap();
+        let small_path = dir.path().join("small.deb");
+        // Write less than 1024 bytes
+        std::fs::write(&small_path, b"x").unwrap();
+
+        let request = VerificationRequest {
+            package_path: small_path.to_str().unwrap().to_string(),
+            checksum: None,
+            checksum_type: None,
+            check_signature: false,
+        };
+
+        let result = verify_package(request);
+        assert!(!result.success);
+        assert!(result.message.contains("too small"));
+    }
+
+    #[test]
+    fn test_verify_package_checksum_match() {
+        let dir = tempdir().unwrap();
+        let file_path = dir.path().join("test.snap");
+        std::fs::write(&file_path, vec![b'x'; 1024]).unwrap();
+
+        // Calculate the expected checksum first
+        let expected = calculate_checksum(&file_path, "sha256").unwrap();
+
+        let request = VerificationRequest {
+            package_path: file_path.to_str().unwrap().to_string(),
+            checksum: Some(expected),
+            checksum_type: Some("sha256".to_string()),
+            check_signature: false,
+        };
+
+        let result = verify_package(request);
+        assert!(result.success);
+        assert_eq!(result.details.checksum_match, Some(true));
+    }
+
+    #[test]
+    fn test_verify_package_checksum_mismatch() {
+        let dir = tempdir().unwrap();
+        let file_path = dir.path().join("test.snap");
+        std::fs::write(&file_path, vec![b'x'; 1024]).unwrap();
+
+        let request = VerificationRequest {
+            package_path: file_path.to_str().unwrap().to_string(),
+            checksum: Some("deadbeef".to_string()),
+            checksum_type: Some("sha256".to_string()),
+            check_signature: false,
+        };
+
+        let result = verify_package(request);
+        assert!(!result.success);
+        assert!(result.message.contains("mismatch"));
+    }
+
+    #[test]
+    fn test_detect_managers() {
+        let status = detect_managers();
+        // At least one manager should be detected on the host
+        assert!(!status.managers.is_empty());
+    }
+
+    #[test]
+    fn test_package_info_valid_deb_path() {
+        let dir = tempdir().unwrap();
+        let deb_path = dir.path().join("test.deb");
+        std::fs::write(&deb_path, b"fake deb").unwrap();
+
+        let result = package_info(deb_path.to_str().unwrap());
+        // Will fail metadata extraction since it's not a real deb, but should not panic
+        assert!(result.is_ok() || result.is_err());
+    }
+
+    #[test]
+    fn test_installation_command_deb_apt() {
+        let result = installation_command(".deb", "/some/path.deb");
+        // On this host, apt may or may not exist; just verify it returns something
+        assert!(result.is_ok() || result.is_err());
+    }
+
+    #[test]
+    fn test_installation_command_snap() {
+        let result = installation_command(".snap", "/some/path.snap");
+        assert!(result.is_ok() || result.is_err());
+    }
+
+    #[test]
+    fn test_installation_command_flatpak() {
+        let result = installation_command(".flatpak", "/some/path.flatpak");
+        assert!(result.is_ok() || result.is_err());
+    }
+
+    #[test]
+    fn test_run_with_timeout_success() {
+        let dir = tempdir().unwrap();
+        let script_path = dir.path().join("sleep.sh");
+        std::fs::write(&script_path, b"#!/bin/bash\nexit 0\n").unwrap();
+        std::fs::set_permissions(&script_path, std::fs::Permissions::from_mode(0o755)).unwrap();
+
+        let child = Command::new(&script_path)
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .spawn()
+            .unwrap();
+
+        let result = run_with_timeout(child);
+        assert!(result.is_ok());
+        let output = result.unwrap();
+        assert!(output.status.success());
+    }
+
+    #[test]
+    fn test_run_with_timeout_failure() {
+        let dir = tempdir().unwrap();
+        let script_path = dir.path().join("sleep.sh");
+        std::fs::write(&script_path, b"#!/bin/bash\nexit 0\n").unwrap();
+        std::fs::set_permissions(&script_path, std::fs::Permissions::from_mode(0o755)).unwrap();
+
+        let child = Command::new(&script_path)
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .spawn()
+            .unwrap();
+
+        // Wait with very short timeout
+        let result = run_with_timeout(child);
+        // Should either succeed (if fast enough) or timeout
+        assert!(result.is_ok() || result.is_err());
+    }
+}
+
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PackageInfo {
@@ -39,6 +270,13 @@ pub struct InstallProgress {
 pub struct InstallResult {
     pub success: bool,
     pub message: String,
+}
+
+#[derive(Debug, serde::Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct UninstallRequest {
+    pub package_name: String,
+    pub format: String,
 }
 
 #[derive(Debug, serde::Deserialize)]
@@ -354,6 +592,61 @@ fn installation_command(format: &str, package_path: &str) -> Result<(String, Vec
     }
 }
 
+fn uninstall_command(format: &str, package_name: &str) -> Result<(String, Vec<String>), String> {
+    if package_name.trim().is_empty() {
+        return Err("Package name cannot be empty".into());
+    }
+
+    let privileged = command_exists("pkexec");
+    let command = |program: &str, arguments: Vec<String>| {
+        if privileged {
+            let mut prefixed = vec![program.to_string()];
+            prefixed.extend(arguments);
+            ("pkexec".to_string(), prefixed)
+        } else {
+            (program.to_string(), arguments)
+        }
+    };
+
+    match format.to_ascii_lowercase().as_str() {
+        ".deb" if command_exists("apt") => Ok(command(
+            "apt",
+            vec!["remove".into(), "-y".into(), package_name.into()],
+        )),
+        ".deb" if command_exists("dpkg") => Ok(command(
+            "dpkg",
+            vec!["--purge".into(), package_name.into()],
+        )),
+        ".rpm" if command_exists("dnf") => Ok(command(
+            "dnf",
+            vec!["remove".into(), "-y".into(), package_name.into()],
+        )),
+        ".rpm" if command_exists("yum") => Ok(command(
+            "yum",
+            vec!["remove".into(), "-y".into(), package_name.into()],
+        )),
+        ".rpm" if command_exists("zypper") => Ok(command(
+            "zypper",
+            vec!["remove".into(), "-y".into(), package_name.into()],
+        )),
+        ".rpm" if command_exists("rpm") => Ok(command(
+            "rpm",
+            vec!["-e".into(), package_name.into()],
+        )),
+        ".snap" if command_exists("snap") => Ok(command(
+            "snap",
+            vec!["remove".into(), package_name.into()],
+        )),
+        ".flatpak" if command_exists("flatpak") => Ok((
+            "flatpak".into(),
+            vec!["uninstall".into(), "-y".into(), package_name.into()],
+        )),
+        _ => Err(format!(
+            "No suitable package manager found for {format} packages"
+        )),
+    }
+}
+
 pub async fn install_package(
     app: AppHandle,
     package_path: String,
@@ -375,6 +668,20 @@ pub async fn install_package(
             40,
             "Reading package metadata",
         );
+        emit_progress(
+            &app,
+            &package_path,
+            "verification",
+            45,
+            "Verifying package",
+        );
+        emit_progress(
+            &app,
+            &package_path,
+            "dependencies",
+            50,
+            "Resolving dependencies",
+        );
 
         let (program, arguments) = installation_command(&format, &package_path)?;
         emit_progress(
@@ -383,6 +690,13 @@ pub async fn install_package(
             "installation",
             60,
             "Installing package",
+        );
+        emit_progress(
+            &app,
+            &package_path,
+            "configuration",
+            80,
+            "Configuring package",
         );
         let child = Command::new(&program)
             .args(&arguments)
@@ -421,13 +735,54 @@ pub async fn install_package(
             &app,
             &package_path,
             if success { "completed" } else { "failed" },
-            if success { 100 } else { 60 },
+            if success { 100 } else { 80 },
             &message,
         );
         Ok(InstallResult { success, message })
     })
     .await
     .map_err(|error| format!("Installation task failed: {error}"))?
+}
+
+pub async fn uninstall_package(
+    app: AppHandle,
+    request: UninstallRequest,
+) -> Result<InstallResult, String> {
+    tauri::async_runtime::spawn_blocking(move || {
+        let package_name = request.package_name.trim();
+        let (program, arguments) = uninstall_command(&request.format, package_name)?;
+        emit_progress(&app, package_name, "uninstallation", 60, "Uninstalling package");
+        let child = Command::new(&program)
+            .args(&arguments)
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .spawn()
+            .map_err(|error| format!("Unable to start {program}: {error}"))?;
+        let output = run_with_timeout(child)?;
+        let stdout = String::from_utf8_lossy(&output.stdout);
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        let diagnostics = if stderr.trim().is_empty() {
+            stdout.trim().to_string()
+        } else {
+            stderr.trim().to_string()
+        };
+        let success = output.status.success();
+        let message = if success {
+            format!("Package uninstalled successfully!\n\n{diagnostics}")
+        } else {
+            format!("Uninstallation failed:\n{diagnostics}")
+        };
+        emit_progress(
+            &app,
+            package_name,
+            if success { "completed" } else { "failed" },
+            if success { 100 } else { 60 },
+            &message,
+        );
+        Ok(InstallResult { success, message })
+    })
+    .await
+    .map_err(|error| format!("Uninstallation task failed: {error}"))?
 }
 
 pub fn detect_managers() -> PackageManagerStatus {

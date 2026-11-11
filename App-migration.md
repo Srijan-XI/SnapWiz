@@ -152,6 +152,8 @@ Avoid moving the existing Python modules until their behavior has been captured 
 
 ### Phase 2 — Package operation service
 
+**Status:** In progress. Manager detection, validation, metadata, checksum/integrity/signature verification, safe argument-array execution, timeout handling, progress events, installation history recording, and the initial uninstall command are implemented in the Rust backend. Docker-based Rust tests currently cover 18 package-service cases. Cancellation, richer structured error categories, installed-package enumeration, and mocked process-runner coverage remain.
+
 1. Port manager detection and supported-format rules from `src/package_handler.py`.
 2. Implement safe subprocess execution:
    - Use `Command` with separate arguments.
@@ -177,6 +179,8 @@ Avoid moving the existing Python modules until their behavior has been captured 
 **Exit criteria:** fixture-based and mocked-process tests cover success, unsupported files, missing managers, non-zero exits, timeout, cancellation, verification failure, and partial batch failure.
 
 ### Phase 3 — Frontend vertical slices
+
+**Status:** In progress. The Install slice now supports native multi-file selection, package metadata loading, queue management, drag-and-drop paths, verification, installation progress events, diagnostics, and result/error handling. Uninstall, history, settings, and application-shell slices remain.
 
 Implement one complete slice at a time:
 

@@ -13,6 +13,7 @@ SnapWiz is migrating from the legacy PyQt5/Python application to Tauri 2:
 
 - `frontend/` contains the React/TypeScript frontend.
 - `src-tauri/` contains the Rust backend and Tauri commands.
+- Phase 2 package operations are in progress, including safe install/uninstall command execution, verification, progress events, and Docker-validated Rust tests.
 - `Dockerfile`, `frontend/Dockerfile.frontend`, and `backend/Dockerfile.backend` provide reproducible Linux builds.
 - The legacy Python application remains available during the migration.
 

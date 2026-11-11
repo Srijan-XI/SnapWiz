@@ -7,8 +7,8 @@ use app_state::{
 };
 use history::{HistoryEntry, clear_history, read_history};
 use package_service::{
-    PackageInfo, VerificationRequest, VerificationResult, detect_managers, install_package,
-    package_info, verify_package,
+    PackageInfo, UninstallRequest, VerificationRequest, VerificationResult, detect_managers,
+    install_package, package_info, uninstall_package, verify_package,
 };
 
 #[tauri::command]
@@ -64,6 +64,14 @@ async fn install_package_command(
 }
 
 #[tauri::command]
+async fn uninstall_package_command(
+    app: tauri::AppHandle,
+    request: UninstallRequest,
+) -> Result<package_service::InstallResult, String> {
+    uninstall_package(app, request).await
+}
+
+#[tauri::command]
 async fn verify_package_command(
     request: VerificationRequest,
 ) -> Result<VerificationResult, String> {
@@ -76,6 +84,7 @@ async fn verify_package_command(
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_dialog::init())
         .invoke_handler(tauri::generate_handler![
             get_app_info,
             get_settings,
@@ -86,6 +95,7 @@ pub fn run() {
             get_history,
             clear_installation_history,
             install_package_command,
+            uninstall_package_command,
             verify_package_command
         ])
         .run(tauri::generate_context!())
