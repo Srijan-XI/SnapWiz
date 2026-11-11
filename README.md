@@ -7,6 +7,17 @@
 
 A magical GUI tool to help Linux users easily install `.deb`, `.rpm`, `.snap`, and `.flatpak` packages with a beautiful, modern interface.
 
+## Migration Status
+
+SnapWiz is migrating from the legacy PyQt5/Python application to Tauri 2:
+
+- `frontend/` contains the React/TypeScript frontend.
+- `src-tauri/` contains the Rust backend and Tauri commands.
+- `Dockerfile`, `frontend/Dockerfile.frontend`, and `backend/Dockerfile.backend` provide reproducible Linux builds.
+- The legacy Python application remains available during the migration.
+
+See [`App-migration.md`](App-migration.md) for the complete migration plan.
+
 ## Features
 
 ### Core Features
@@ -75,6 +86,24 @@ The application automatically detects your system's package manager:
   ```
 
 ## Installation
+
+### Tauri Development with Docker
+
+Docker is the recommended development path for the Tauri migration. It avoids host Rust toolchain and Windows Application Control issues.
+
+```bash
+# Build both development images
+docker compose build
+
+# Run the frontend development server
+docker compose up frontend
+# Open http://localhost:1420
+
+# Validate the Rust/Tauri backend
+docker compose run --rm backend
+```
+
+The backend service runs `cargo check`; it is not an HTTP server. The Tauri desktop application combines the frontend and backend into one native process during packaging.
 
 ### Option 1: Quick Install (Recommended)
 

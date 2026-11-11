@@ -9,9 +9,10 @@
 ## Table of Contents
 
 1. [Project Structure](#project-structure)
-2. [Development Roadmap](#development-roadmap)
-3. [Release Notes](#release-notes)
-4. [Contributing Guidelines](#contributing-guidelines)
+2. [Docker and Tauri Development](#docker-and-tauri-development)
+3. [Development Roadmap](#development-roadmap)
+4. [Release Notes](#release-notes)
+5. [Contributing Guidelines](#contributing-guidelines)
 
 ---
 
@@ -50,7 +51,11 @@ SnapWiz/
 ├── CONTRIBUTING.md                 # Contribution guidelines
 ├── LICENSE                         # MIT License
 ├── requirements.txt                # Python dependencies
-└── install.sh                      # Installation script
+├── package.json                    # Tauri/frontend scripts
+├── Dockerfile*                     # Tauri build and service images
+├── docker-compose.yml              # Docker development workflow
+├── frontend/                       # React/TypeScript UI
+└── src-tauri/                      # Rust/Tauri backend
 ```
 
 ### Core Modules
@@ -201,6 +206,41 @@ language.py (load preference)
     ↓
 locales/{lang}/LC_MESSAGES/snapwiz.json
 ```
+
+## Docker and Tauri Development
+
+The Tauri migration uses Docker for reproducible Linux builds and backend validation. This is especially important on Windows hosts where Application Control can block Cargo-generated build scripts.
+
+### Build the services
+
+```bash
+docker compose build
+```
+
+### Run the frontend
+
+```bash
+docker compose up frontend
+```
+
+The Vite development server is available at `http://localhost:1420`.
+
+### Validate the backend
+
+```bash
+docker compose run --rm backend
+```
+
+The backend container runs `cargo check` against `src-tauri/Cargo.toml`. It validates the native Tauri command layer; it does not start an HTTP service.
+The frontend and backend container definitions are stored in `frontend/Dockerfile.frontend` and `backend/Dockerfile.backend`; both services continue to use the repository root as their build context.
+
+### Full image
+
+```bash
+docker build -t snapwiz-tauri-builder .
+```
+
+The root `Dockerfile` installs Node 22, Rust 1.90, and the Linux WebKit/GTK dependencies, then runs the frontend build and Rust check.
 
 ---
 

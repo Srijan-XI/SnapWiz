@@ -19,6 +19,23 @@ SnapWiz/
 ├── requirements.txt                # Python dependencies
 ├── setup.py                        # Setup configuration
 ├── .gitignore                      # Git ignore rules
+├── Dockerfile                     # Full Tauri build image
+├── docker-compose.yml             # Frontend/backend Docker workflow
+├── .dockerignore                  # Docker build context exclusions
+├── package.json                   # Frontend and Tauri scripts
+├── package-lock.json              # npm dependency lockfile
+├── frontend/                      # React/TypeScript frontend
+│   ├── Dockerfile.frontend        # Frontend development image
+│   ├── App.tsx                    # Application shell
+│   ├── App.css                    # Frontend styling
+│   ├── main.tsx                   # Frontend entry point
+│   └── index.html                 # Frontend HTML entry
+├── backend/                       # Backend container configuration
+│   └── Dockerfile.backend         # Rust/Tauri validation image
+├── src-tauri/                     # Rust/Tauri backend source
+│   ├── Cargo.toml                 # Rust dependencies
+│   ├── tauri.conf.json            # Tauri application configuration
+│   └── src/                       # Commands and backend services
 │
 ├── src/                            # Core source code
 │   ├── __init__.py                 # Package initialization
@@ -59,6 +76,17 @@ SnapWiz/
 ---
 
 ## 📦 Package Organization
+
+### Tauri and Docker Packages
+
+The migration runtime is split into a web frontend and native Rust backend:
+
+- `frontend/` renders the application and invokes typed Tauri commands.
+- `src-tauri/src/` owns package validation, metadata, installation, verification, settings, and history.
+- `frontend/Dockerfile.frontend` runs Vite on port `1420`.
+- `backend/Dockerfile.backend` validates the Rust crate with `cargo check`.
+- `docker-compose.yml` provides the `frontend` and `backend` development services.
+- `Dockerfile` builds the complete Linux Tauri toolchain with Node 22 and Rust 1.90.
 
 ### Root Directory
 

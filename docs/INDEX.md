@@ -70,7 +70,8 @@ Welcome to the SnapWiz documentation!
 1. Read DEVELOPMENT_GUIDE.md
 2. Check project structure
 3. Review contribution guidelines
-4. Start coding!
+4. Run `docker compose build`
+5. Start coding!
 ```
 
 ---
@@ -145,6 +146,18 @@ Or check main [../CHANGELOG.md](../CHANGELOG.md) for detailed version history.
 3. **Development:** See [DEVELOPMENT_GUIDE.md](DEVELOPMENT_GUIDE.md)
 4. **Keyboard Shortcuts:** See [KEYBOARD_SHORTCUTS.md](KEYBOARD_SHORTCUTS.md)
 5. **Still Stuck:** Open an issue on GitHub
+
+## 🐳 Tauri Development
+
+The migration uses Docker for the Tauri frontend and Rust backend:
+
+```bash
+docker compose build
+docker compose up frontend
+docker compose run --rm backend
+```
+
+See [DEVELOPMENT_GUIDE.md](DEVELOPMENT_GUIDE.md#docker-and-tauri-development) for details.
 
 ---
 
