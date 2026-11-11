@@ -1,0 +1,15 @@
+FROM node:22-bookworm
+
+ENV npm_config_update_notifier=false
+
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+RUN npm ci
+
+COPY frontend ./frontend
+COPY vite.config.ts tsconfig.json tsconfig.node.json ./
+
+EXPOSE 1420
+
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]

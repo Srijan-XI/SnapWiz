@@ -1,0 +1,32 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    working_dir: /app
+    command: npm run dev -- --host 0.0.0.0
+    ports:
+      - "1420:1420"
+    volumes:
+      - .:/app
+      - frontend_node_modules:/app/node_modules
+    environment:
+      VITE_TAURI_DEV_HOST: 0.0.0.0
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    working_dir: /app/src-tauri
+    command: cargo check
+    volumes:
+      - ./src-tauri:/app/src-tauri
+      - backend_target:/app/src-tauri/target
+      - cargo_registry:/usr/local/cargo/registry
+      - cargo_git:/usr/local/cargo/git
+
+volumes:
+  frontend_node_modules:
+  backend_target:
+  cargo_registry:
+  cargo_git:
