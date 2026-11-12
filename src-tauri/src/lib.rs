@@ -7,8 +7,9 @@ use app_state::{
 };
 use history::{HistoryEntry, clear_history, read_history};
 use package_service::{
-    PackageInfo, UninstallRequest, VerificationRequest, VerificationResult, detect_managers,
-    install_package, package_info, uninstall_package, verify_package,
+    InstalledPackage, PackageInfo, UninstallRequest, VerificationRequest, VerificationResult,
+    detect_managers, get_installed_packages, install_package, package_info, uninstall_package,
+    verify_package,
 };
 
 #[tauri::command]
@@ -80,6 +81,11 @@ async fn verify_package_command(
         .map_err(|error| format!("Verification task failed: {error}"))?
 }
 
+#[tauri::command]
+fn get_installed_packages_command() -> Vec<InstalledPackage> {
+    get_installed_packages()
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -96,7 +102,8 @@ pub fn run() {
             clear_installation_history,
             install_package_command,
             uninstall_package_command,
-            verify_package_command
+            verify_package_command,
+            get_installed_packages_command
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

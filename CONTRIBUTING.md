@@ -1,6 +1,6 @@
-# Contributing to Linux Package Installer
+# Contributing to SnapWiz
 
-Thank you for considering contributing to Linux Package Installer! This document provides guidelines and instructions for contributing.
+Thank you for considering contributing to SnapWiz! This document provides guidelines and instructions for contributing.
 
 ## Code of Conduct
 
@@ -51,8 +51,8 @@ Enhancement suggestions are tracked as GitHub issues. When creating an enhanceme
 
 1. Clone your fork:
 ```bash
-git clone https://github.com/YOUR_USERNAME/linux-package-installer.git
-cd linux-package-installer
+git clone https://github.com/YOUR_USERNAME/SnapWiz.git
+cd SnapWiz
 ```
 
 2. Create a virtual environment:
@@ -137,7 +137,7 @@ Currently, the project doesn't have automated tests, but manual testing is essen
 ## Project Structure
 
 ```
-linux-package-installer/
+SnapWiz/
 ├── main.py              # Main application and GUI
 ├── package_handler.py   # Package operations
 ├── logger.py            # Logging functionality

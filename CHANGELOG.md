@@ -2,6 +2,12 @@
 
 All notable changes to the **SnapWiz** (formerly Linux Package Installer) project.
 
+
+## [2.0] - 11-11-2026
+
+### App migration to tauri framework 
+
+
 ## [1.4.0] - 2026-02-09
 
 ### Added - Snap & Flatpak Support + Drag-and-Drop + Multi-Language

@@ -265,11 +265,20 @@ pub struct InstallProgress {
     pub message: String,
 }
 
+#[derive(Debug, Serialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct InstalledPackage {
+    pub name: String,
+    pub version: String,
+    pub format: String,
+}
+
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct InstallResult {
     pub success: bool,
     pub message: String,
+    pub error_category: Option<String>,
 }
 
 #[derive(Debug, serde::Deserialize)]
@@ -540,6 +549,22 @@ fn run_with_timeout(mut child: Child) -> Result<Output, String> {
         .map_err(|error| format!("Unable to collect package manager output: {error}"))
 }
 
+fn run_with_timeout_secs(mut child: Child, secs: u64) -> Result<Output, String> {
+    let completed = child
+        .wait_timeout(Duration::from_secs(secs))
+        .map_err(|error| format!("Unable to wait for package manager: {error}"))?;
+    if completed.is_none() {
+        child
+            .kill()
+            .map_err(|error| format!("Unable to stop timed-out package manager: {error}"))?;
+        let _ = child.wait();
+        return Err(format!("Command timed out after {secs} seconds"));
+    }
+    child
+        .wait_with_output()
+        .map_err(|error| format!("Unable to collect package manager output: {error}"))
+}
+
 fn installation_command(format: &str, package_path: &str) -> Result<(String, Vec<String>), String> {
     let privileged = command_exists("pkexec");
     let command = |program: &str, arguments: Vec<String>| {
@@ -796,6 +821,143 @@ pub fn detect_managers() -> PackageManagerStatus {
             .map(str::to_string)
             .collect(),
     }
+}
+
+/// Categorise an error string into one of the well-known error_category values.
+fn categorise_install_error(error_msg: &str, timed_out: bool) -> Option<String> {
+    if timed_out {
+        return Some("timeout".to_string());
+    }
+    let lower = error_msg.to_ascii_lowercase();
+    if lower.contains("permission denied") || lower.contains("operation not permitted") {
+        Some("permission_denied".to_string())
+    } else if lower.contains("no suitable package manager")
+        || lower.contains("command not found")
+        || lower.contains("not installed")
+    {
+        Some("missing_manager".to_string())
+    } else if lower.contains("unsupported")
+        || lower.contains("unknown format")
+        || lower.contains("no suitable package manager found for")
+    {
+        Some("unsupported_format".to_string())
+    } else if lower.contains("verification failed") || lower.contains("checksum mismatch") {
+        Some("verification_failed".to_string())
+    } else {
+        Some("process_failed".to_string())
+    }
+}
+
+pub fn get_installed_packages() -> Vec<InstalledPackage> {
+    let mut packages: Vec<InstalledPackage> = Vec::new();
+
+    // --- dpkg (deb) ---
+    if command_exists("dpkg") {
+        let child = Command::new("dpkg")
+            .args(["--get-selections"])
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .spawn();
+        if let Ok(child) = child {
+            if let Ok(output) = run_with_timeout_secs(child, 30) {
+                if output.status.success() {
+                    for line in String::from_utf8_lossy(&output.stdout).lines() {
+                        // format: "package-name\tinstall"
+                        let parts: Vec<&str> = line.split_whitespace().collect();
+                        if parts.len() >= 2 && parts[1] == "install" {
+                            packages.push(InstalledPackage {
+                                name: parts[0].to_string(),
+                                version: String::new(),
+                                format: ".deb".to_string(),
+                            });
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // --- rpm ---
+    if command_exists("rpm") {
+        let child = Command::new("rpm")
+            .args(["-qa", "--queryformat", "%{NAME}\t%{VERSION}\t%{ARCH}\n"])
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .spawn();
+        if let Ok(child) = child {
+            if let Ok(output) = run_with_timeout_secs(child, 30) {
+                if output.status.success() {
+                    for line in String::from_utf8_lossy(&output.stdout).lines() {
+                        let parts: Vec<&str> = line.splitn(3, '\t').collect();
+                        if parts.len() >= 2 {
+                            packages.push(InstalledPackage {
+                                name: parts[0].to_string(),
+                                version: parts[1].to_string(),
+                                format: ".rpm".to_string(),
+                            });
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // --- snap ---
+    if command_exists("snap") {
+        let child = Command::new("snap")
+            .args(["list"])
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .spawn();
+        if let Ok(child) = child {
+            if let Ok(output) = run_with_timeout_secs(child, 30) {
+                if output.status.success() {
+                    // Header line is: Name  Version  Rev  Tracking  Publisher  Notes
+                    for line in String::from_utf8_lossy(&output.stdout).lines().skip(1) {
+                        let parts: Vec<&str> = line.split_whitespace().collect();
+                        if parts.len() >= 2 {
+                            packages.push(InstalledPackage {
+                                name: parts[0].to_string(),
+                                version: parts[1].to_string(),
+                                format: ".snap".to_string(),
+                            });
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // --- flatpak ---
+    if command_exists("flatpak") {
+        let child = Command::new("flatpak")
+            .args(["list", "--app", "--columns=application,version"])
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .spawn();
+        if let Ok(child) = child {
+            if let Ok(output) = run_with_timeout_secs(child, 30) {
+                if output.status.success() {
+                    for line in String::from_utf8_lossy(&output.stdout).lines() {
+                        let parts: Vec<&str> = line.splitn(2, '\t').collect();
+                        if !parts.is_empty() && !parts[0].trim().is_empty() {
+                            packages.push(InstalledPackage {
+                                name: parts[0].trim().to_string(),
+                                version: if parts.len() >= 2 {
+                                    parts[1].trim().to_string()
+                                } else {
+                                    String::new()
+                                },
+                                format: ".flatpak".to_string(),
+                            });
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    packages
 }
 
 pub fn package_info(package_path: &str) -> Result<PackageInfo, String> {

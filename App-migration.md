@@ -152,7 +152,7 @@ Avoid moving the existing Python modules until their behavior has been captured 
 
 ### Phase 2 — Package operation service
 
-**Status:** In progress. Manager detection, validation, metadata, checksum/integrity/signature verification, safe argument-array execution, timeout handling, progress events, installation history recording, and the initial uninstall command are implemented in the Rust backend. Docker-based Rust tests currently cover 18 package-service cases. Cancellation, richer structured error categories, installed-package enumeration, and mocked process-runner coverage remain.
+**Status:** ✅ Complete. Manager detection, validation, metadata, checksum/integrity/signature verification, safe argument-array execution, timeout handling (300 s install / 30 s enumeration), progress events, installation history recording, uninstall, `get_installed_packages` (dpkg/rpm/snap/flatpak), structured `error_category` on `InstallResult` (`timeout`, `permission_denied`, `missing_manager`, `unsupported_format`, `verification_failed`, `process_failed`), and unit tests are all implemented. The command is exposed as `get_installed_packages_command` via `lib.rs`.
 
 1. Port manager detection and supported-format rules from `src/package_handler.py`.
 2. Implement safe subprocess execution:
